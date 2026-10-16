@@ -779,6 +779,97 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
 .stack-grid.dealing .stack-panel{transition:none!important;will-change:transform;}
 .shuffle-btn[disabled]{opacity:.7;pointer-events:none;}
 .shuffle-count{display:inline-block;margin-left:6px;background:var(--ink);color:var(--yellow);border-radius:10px;padding:1px 7px;font-size:10.5px;}
+
+/* ============================================================
+   v13: Bit companion, boot intro, build log, secret room, journey Bit
+   ============================================================ */
+/* ---- boot intro ---- */
+#loaderName{display:none;}
+.boot{width:min(640px,90vw);background:var(--ink);color:#D8D8E8;border:4px solid var(--white);border-radius:20px;box-shadow:12px 12px 0 rgba(0,0,0,.35);overflow:hidden;font-family:var(--font-mono);transform:rotate(-1deg);}
+.boot-bar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:2px solid #2a2a33;font-size:12px;color:#8A8A94;}
+.boot-bar i{width:11px;height:11px;border-radius:50%;display:block;}
+.boot-body{padding:16px 18px 6px;font-size:13px;line-height:1.85;min-height:206px;}
+.boot-body div{white-space:pre;overflow:hidden;opacity:0;}
+.boot-body .ok{color:var(--green);} .boot-body .warn{color:var(--yellow);} .boot-body .dim{color:#6B6B7A;}
+.boot-prog{display:flex;align-items:center;gap:12px;padding:6px 18px 16px;font-size:12px;font-weight:700;}
+.boot-track{flex:1;height:14px;border:3px solid var(--white);border-radius:10px;overflow:hidden;background:#17171D;}
+.boot-fill{height:100%;width:0;background:var(--yellow);}
+.boot-skip{text-align:center;margin-top:18px;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--ink);opacity:.7;}
+.boot-wrap{display:flex;flex-direction:column;align-items:center;}
+
+/* ---- mini Bit (dock + journey) ---- */
+.mbit{width:100%;height:auto;display:block;overflow:visible;}
+.mbit .mb-closed,.mbit .mb-o,.mbit .mb-wavy{display:none;}
+.mbit .mb-ant{transform-origin:50px 30px;animation:antWob 2.6s ease-in-out infinite;}
+.mbit.sleep .mb-eyes{display:none;} .mbit.sleep .mb-closed{display:block;}
+.mbit.sleep .mb-ant{animation:none;transform:rotate(-42deg);}
+.mbit.wow .mb-smile,.mbit.dizzy .mb-smile{display:none;}
+.mbit.wow .mb-o{display:block;} .mbit.dizzy .mb-wavy{display:block;}
+.mbit.wow .mb-eyes{transform:scale(1.14);transform-origin:50px 58px;}
+.mbit.dizzy .mb-pup{animation:dz .45s linear infinite;transform-box:fill-box;transform-origin:center;}
+@keyframes dz{to{transform:rotate(360deg);}}
+.bit-dock{position:fixed;left:24px;bottom:184px;width:68px;z-index:879;transition:transform .5s cubic-bezier(.2,.9,.3,1.2),opacity .35s ease;}
+.bit-dock.away{transform:translateY(130px);opacity:0;pointer-events:none;}
+.bit-btn{display:block;width:100%;background:none;border:0;padding:0;cursor:pointer;filter:drop-shadow(4px 5px 0 rgba(11,11,15,.4));}
+.bit-btn:hover .mbit{animation:bitHop .5s ease;}
+@keyframes bitHop{50%{transform:translateY(-10px) rotate(-4deg);}}
+.bit-bubble{position:absolute;left:78px;bottom:34px;width:max-content;max-width:210px;background:var(--white);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:8px 12px;font-family:var(--font-mono);font-size:11.5px;font-weight:700;line-height:1.4;box-shadow:4px 4px 0 var(--ink);opacity:0;transform:translateX(-8px) scale(.9);transform-origin:0 100%;transition:opacity .25s ease,transform .3s cubic-bezier(.2,.9,.3,1.4);pointer-events:none;}
+.bit-bubble.show{opacity:1;transform:none;}
+.bit-bubble::before{content:'';position:absolute;left:-9px;bottom:14px;width:11px;height:11px;background:var(--white);border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg);}
+.bit-zzz{position:absolute;left:52px;top:-18px;font-family:var(--font-display);font-size:22px;color:var(--white);text-shadow:2px 2px 0 var(--ink);opacity:0;pointer-events:none;}
+.bit-zzz i,.bit-zzz b{font-style:normal;display:inline-block;}
+.bit-dock.asleep .bit-zzz{opacity:1;animation:zzz 2.2s ease-in-out infinite;}
+@keyframes zzz{0%{transform:translate(0,6px);opacity:0;}30%{opacity:1;}100%{transform:translate(14px,-16px);opacity:0;}}
+@media(max-width:600px){.bit-dock{left:12px;width:52px;bottom:176px;}.bit-bubble{left:60px;max-width:160px;font-size:10.5px;}}
+
+/* ---- journey: Bit rides the line ---- */
+.journey-head{width:0;height:0;margin:0;background:none;border:0;box-shadow:none;animation:none;left:50%;}
+.jb-bit{position:absolute;left:-22px;top:-30px;width:44px;filter:drop-shadow(3px 3px 0 rgba(11,11,15,.35));transition:transform .25s ease;}
+.jb-pop{position:absolute;left:50%;top:-16px;transform:translateX(-50%);font-size:20px;opacity:0;pointer-events:none;}
+
+/* ---- build log ---- */
+.log-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start;}
+@media(max-width:960px){.log-grid{grid-template-columns:1fr;}}
+.log-card{background:var(--white);color:var(--ink);padding:0;overflow:hidden;position:relative;}
+.log-top{height:12px;border-bottom:3px solid var(--ink);}
+.log-in{padding:20px 22px 22px;}
+.log-meta{display:flex;justify-content:space-between;gap:10px;font-family:var(--font-mono);font-size:11px;font-weight:700;opacity:.75;margin-bottom:12px;}
+.log-title{font-family:var(--font-display);font-size:30px;line-height:1.02;text-transform:uppercase;margin-bottom:12px;}
+.log-tldr{font-family:var(--font-ui);font-size:14.5px;font-weight:600;line-height:1.5;margin-bottom:14px;}
+.log-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.log-tags span{border:2px solid var(--ink);border-radius:20px;padding:3px 10px;font-family:var(--font-mono);font-size:10.5px;font-weight:700;background:var(--paper);}
+.log-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-weight:700;font-size:12px;background:var(--ink);color:var(--white);border:0;border-radius:20px;padding:9px 15px;cursor:pointer;}
+.log-btn .arr{display:inline-block;transition:transform .3s ease;}
+.log-card.open .log-btn .arr{transform:rotate(90deg);}
+.log-more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.2,.9,.3,1);}
+.log-card.open .log-more{grid-template-rows:1fr;}
+.log-more > div{overflow:hidden;}
+.log-more-in{padding-top:16px;border-top:2px dashed var(--ink);margin-top:16px;font-family:var(--font-ui);font-size:14px;line-height:1.65;font-weight:500;}
+.log-more-in h5{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin:12px 0 4px;color:var(--brand);}
+.log-more-in h5:first-child{margin-top:0;}
+.log-more-in p{margin:0 0 4px;}
+.log-stat{display:inline-block;margin-top:12px;font-family:var(--font-display);font-size:26px;background:var(--yellow);border:3px solid var(--ink);border-radius:12px;padding:2px 12px;box-shadow:3px 3px 0 var(--ink);}
+
+/* ---- secret room + footer button ---- */
+.secret-btn{background:none;border:2px dashed #55555f;color:#C8C8D4;border-radius:14px;padding:4px 10px;margin-left:10px;font-family:var(--font-mono);font-size:11px;font-weight:700;cursor:pointer;}
+.secret-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+.secret-btn.unlocked{border-style:solid;border-color:var(--green);color:var(--green);animation:headPulse 2s ease-out infinite;}
+.ov.secret{align-items:center;padding:16px;}
+.sr-box{max-width:680px;background:#0B0B0F;color:#D8D8E8;border-color:var(--yellow);box-shadow:12px 12px 0 rgba(255,210,63,.25);padding:30px 30px 26px;max-height:90vh;overflow-y:auto;position:relative;}
+.sr-x{position:absolute;top:14px;right:16px;background:var(--yellow);border:3px solid var(--ink);border-radius:50%;width:34px;height:34px;font-weight:700;cursor:pointer;}
+.sr-kicker{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.sr-box h3{font-family:var(--font-display);font-size:clamp(40px,8vw,64px);line-height:.95;text-transform:uppercase;color:var(--yellow);margin-bottom:10px;}
+.sr-box p{font-family:var(--font-ui);font-size:14.5px;font-weight:500;margin-bottom:16px;}
+.sr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;}
+.sr-tile{border:3px solid #3a3a46;border-radius:14px;padding:12px;font-family:var(--font-mono);font-size:11.5px;font-weight:700;filter:grayscale(1);opacity:.45;}
+.sr-tile b{display:block;font-size:22px;margin-bottom:4px;}
+.sr-tile.got{filter:none;opacity:1;border-color:var(--green);background:#14201a;}
+.sr-foot{font-family:var(--font-mono);font-size:11px;color:#8A8A94;margin-bottom:14px;}
+.sr-reward{border:3px dashed var(--yellow);border-radius:14px;padding:14px;font-family:var(--font-ui);font-size:14px;font-weight:600;}
+.sr-reward a{display:inline-block;margin-top:10px;background:var(--yellow);color:var(--ink);border:3px solid var(--ink);border-radius:20px;padding:8px 16px;font-family:var(--font-mono);font-weight:700;font-size:12px;text-decoration:none;}
+
+.loader{z-index:1002!important;background:transparent!important;}
+.boot-skip{color:#8A8A94!important;opacity:1!important;}
 </style>
 </head>
 <body>
@@ -794,6 +885,14 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
 
 <div class="loader" id="loader">
   <div class="loader-name" id="loaderName">HEY THERE</div>
+  <div class="boot-wrap">
+    <div class="boot" id="boot">
+      <div class="boot-bar"><i style="background:#FF5A5F"></i><i style="background:#FFD23F"></i><i style="background:#8FE24B"></i>&nbsp; rohal.dev &mdash; boot sequence</div>
+      <div class="boot-body" id="bootLog"></div>
+      <div class="boot-prog"><span>boot</span><div class="boot-track"><div class="boot-fill" id="bootBar"></div></div><span id="bootPct">0%</span></div>
+    </div>
+    <div class="boot-skip">click or press any key to skip</div>
+  </div>
 </div>
 <div class="loader-panel top" id="panelTop"></div>
 <div class="loader-panel bottom" id="panelBottom"></div>
@@ -869,6 +968,15 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
 
 <div class="hint-chip">⌘/Ctrl + K · command palette</div>
 
+<div class="ov secret" id="secretOv"><div class="ov-box sr-box">
+  <button class="sr-x" id="srX" aria-label="Close secret room">&#10005;</button>
+  <div class="sr-kicker">&#128275; secret room unlocked</div>
+  <h3>You found it.</h3>
+  <p>Most visitors never scroll this far. Here is what you have uncovered so far:</p>
+  <div class="sr-grid" id="srGrid"></div>
+  <div class="sr-foot" id="srFoot"></div>
+  <div class="sr-reward" id="srReward"></div>
+</div></div>
 <div class="hire-modal-overlay" id="hireModalOverlay">
   <div class="hire-modal">
     <button class="hire-modal-close" id="hireModalClose" data-magnetic aria-label="Close">✕</button>
@@ -1312,6 +1420,54 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
   </div>
 </section>
 
+<div class="wave-divider" style="background:var(--brand);"><svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,50 C240,0 480,100 720,50 C960,0 1200,100 1440,50 L1440,100 L0,100 Z" fill="var(--paper)"/></svg></div>
+
+<!-- BUILD LOG -->
+<section id="log" class="section-pad" style="background:var(--paper);color:var(--ink);">
+  <div class="wrap">
+    <div class="eyebrow reveal">&#9670; build log</div>
+    <h2 class="section-title kinetic reveal">Build<br/>log</h2>
+    <p class="section-sub reveal">Short notes on how things actually got built. Tap one to read it.</p>
+    <div class="log-grid">
+    <article class="log-card nb-card reveal" id="note01">
+      <div class="log-top" style="background:var(--coral);"></div>
+      <div class="log-in">
+        <div class="log-meta"><span>note #01</span><span>~1 min read</span></div>
+        <h3 class="log-title">How I cut incident diagnosis time by up to 90%</h3>
+        <p class="log-tldr">Three dashboards, one tired engineer. So I let an LLM agent read them together.</p>
+        <div class="log-tags"><span>Claude API</span><span>Prometheus</span><span>Grafana</span><span>Jaeger</span></div>
+        <button class="log-btn" type="button" aria-expanded="false" data-magnetic data-cursor="read"><span>read the note</span><span class="arr">&#9656;</span></button>
+        <div class="log-more"><div><div class="log-more-in"><h5>The problem</h5><p>When something breaks you tab-switch between Prometheus (metrics), Grafana (dashboards) and Jaeger (traces) and correlate by eye. It is slow, and it happens at the worst possible time.</p><h5>The approach</h5><p>A thin adapter layer normalises each source into one shape, so the agent can reason over metrics and traces together. The Claude API then turns the correlated signals into a plain-English explanation.</p><h5>The lesson</h5><p>The model was not the hard part. Clean, comparable inputs were.</p><span class="log-stat">UP TO -90% DIAGNOSIS TIME</span></div></div></div>
+      </div>
+    </article>
+    <article class="log-card nb-card reveal" id="note02">
+      <div class="log-top" style="background:var(--yellow);"></div>
+      <div class="log-in">
+        <div class="log-meta"><span>note #02</span><span>~1 min read</span></div>
+        <h3 class="log-title">Killing the spreadsheet-and-email workflow</h3>
+        <p class="log-tldr">Wholesale orders lived in spreadsheets and inboxes. I replaced that with one single-page app.</p>
+        <div class="log-tags"><span>React</span><span>TypeScript</span><span>Node.js</span><span>SQL</span></div>
+        <button class="log-btn" type="button" aria-expanded="false" data-magnetic data-cursor="read"><span>read the note</span><span class="arr">&#9656;</span></button>
+        <div class="log-more"><div><div class="log-more-in"><h5>The problem</h5><p>Reps were re-typing the same numbers into three systems, and orders could get lost in email threads.</p><h5>The approach</h5><p>An internal SPA for catalog, inventory and wholesale orders on top of one integrated API, so every number is entered once.</p><h5>The lesson</h5><p>Stop patching symptoms. Asking why the same ticket keeps coming back found shared root causes.</p><span class="log-stat">ORDERS +20% FASTER</span></div></div></div>
+      </div>
+    </article>
+    <article class="log-card nb-card reveal" id="note03">
+      <div class="log-top" style="background:var(--green);"></div>
+      <div class="log-in">
+        <div class="log-meta"><span>note #03</span><span>~1 min read</span></div>
+        <h3 class="log-title">Tests before features</h3>
+        <p class="log-tldr">Every data-driven feature got a test before it shipped. Boring, and it works.</p>
+        <div class="log-tags"><span>React</span><span>Django</span><span>.NET</span><span>Docker</span></div>
+        <button class="log-btn" type="button" aria-expanded="false" data-magnetic data-cursor="read"><span>read the note</span><span class="arr">&#9656;</span></button>
+        <div class="log-more"><div><div class="log-more-in"><h5>The problem</h5><p>Features serving 50,000+ daily users meant regressions had real, immediate cost.</p><h5>The approach</h5><p>Unit and integration tests for each data-driven feature before release, plus a pass on slow API calls.</p><h5>The lesson</h5><p>Boring discipline measurably beats 11pm fire drills.</p><span class="log-stat">-35% REGRESSION BUGS</span></div></div></div>
+      </div>
+    </article>
+    </div>
+  </div>
+</section>
+
+<div class="wave-divider" style="background:var(--paper);"><svg viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,50 C240,100 480,0 720,50 C960,100 1200,0 1440,50 L1440,100 L0,100 Z" fill="var(--brand)"/></svg></div>
+
 <!-- READY TO / CONTACT -->
 <div class="ready-wrap">
   <svg class="ready-svg" viewBox="0 0 900 160">
@@ -1425,12 +1581,23 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
     window.__heroPlayed = true; if(window.__heroReady) window.__heroReady();
   }
   function runLoader(){
-    const tl = gsap.timeline({defaults:{ease:'power4.out'}});
-    tl.to('#loaderName span', {y:'0%', duration:0.8, stagger:0.03})
-      .to('#loaderName', {opacity:0, duration:.4, delay:.5})
-      .to([panelTop, panelBottom], {duration:.75, ease:'power4.inOut', y:(i)=> i===0 ? '-100%' : '100%'}, '-=.1')
+    const log=document.getElementById('bootLog'), bar=document.getElementById('bootBar'), pct=document.getElementById('bootPct');
+    const seen=(function(){ try{ return sessionStorage.getItem('rk-booted'); }catch(e){ return null; } })();
+    const L=[['BIOS','rohal.dev firmware v13','OK','ok'],['mount','/projects /stack /journey','OK','ok'],['load','react node django claude-api','OK','ok'],['attach','bit.sys (friendly robot)','OK','ok'],['check','coffee levels','LOW','warn'],['start','portfolio.service','READY','ok']];
+    const tl=gsap.timeline({defaults:{ease:'none'}});
+    const step=seen?0.12:0.3;
+    L.forEach((l,i)=>{
+      tl.add(()=>{ const d=document.createElement('div'); d.innerHTML='<span class="dim">['+String(i+1).padStart(2,'0')+']</span> '+l[0].padEnd(7,' ')+' '+l[1].padEnd(30,'.')+' <span class="'+l[3]+'">'+l[2]+'</span>'; log.appendChild(d); gsap.to(d,{opacity:1,duration:.12}); if(window.__sfx) window.__sfx.tick(); }, i*step);
+      tl.to(bar,{width:((i+1)/L.length*100)+'%',duration:step*0.9},i*step);
+      tl.to({v:0},{v:1,duration:step*0.9,onUpdate:function(){ pct.textContent=Math.round(parseFloat(bar.style.width)||0)+'%'; }},i*step);
+    });
+    tl.to('#boot',{opacity:0,y:-14,duration:.3,ease:'power2.in'},'+=.35')
+      .to('.boot-skip',{opacity:0,duration:.2},'<')
+      .to([panelTop, panelBottom], {duration:.75, ease:'power4.inOut', y:(i)=> i===0 ? '-100%' : '100%'}, '-=.05')
       .set(loader, {display:'none'}).set([panelTop,panelBottom], {display:'none'})
-      .add(()=>{ playHeroIntro(); });
+      .add(()=>{ try{ sessionStorage.setItem('rk-booted','1'); }catch(e){} playHeroIntro(); });
+    const skip=()=>{ tl.timeScale(9); window.removeEventListener('keydown',skip); loader.removeEventListener('pointerdown',skip); };
+    window.addEventListener('keydown',skip); loader.addEventListener('pointerdown',skip);
   }
   if(reduceMotion){ loader.style.display='none'; panelTop.style.display='none'; panelBottom.style.display='none'; playHeroIntro(); }
   else { runLoader(); }
@@ -1678,7 +1845,7 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
   const dotSections = [
     {id:'hero', label:'Top'}, {id:'replay', label:'Replay'}, {id:'build', label:'Build'},
     {id:'about', label:'About'}, {id:'metrics', label:'Metrics'}, {id:'work', label:'Work'},
-    {id:'github', label:'GitHub'}, {id:'stack', label:'Stack'}, {id:'journey', label:'Journey'}, {id:'contact', label:'Contact'}
+    {id:'github', label:'GitHub'}, {id:'stack', label:'Stack'}, {id:'journey', label:'Journey'}, {id:'log', label:'Log'}, {id:'contact', label:'Contact'}
   ];
   const sideDotsEl = document.getElementById('sideDots');
   dotSections.forEach(s=>{
@@ -2174,7 +2341,7 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
       kpos = 0;
       const on = document.documentElement.classList.toggle('debug-mode');
       showToast(on ? '🐛 debug mode: ON — every element outlined' : 'debug mode: off', 3200);
-      if(on) burstConfetti(window.innerWidth/2, window.innerHeight/3);
+      if(on){ burstConfetti(window.innerWidth/2, window.innerHeight/3); if(window.__ach) window.__ach('konami'); }
     }
   });
 
@@ -2199,7 +2366,7 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
 
   /* ---------- section-to-section page wipe ---------- */
   const wipe=$('wipe'), wipeTxt=$('wipeTxt'); const wipeCols=['#FF5A5F','#FFD23F','#8FE24B','#B892FF']; let wipeI=0, wiping=false;
-  const secLabels={hero:'Top',replay:'Replay',build:'Build',about:'About',metrics:'Metrics',work:'Work',github:'GitHub',stack:'Stack',journey:'Journey',contact:'Contact'};
+  const secLabels={hero:'Top',replay:'Replay',build:'Build',about:'About',metrics:'Metrics',work:'Work',github:'GitHub',stack:'Stack',journey:'Journey',log:'Build log',contact:'Contact'};
   function scrollToId(id){
     const el=document.getElementById(id); if(!el) return;
     const y = el.getBoundingClientRect().top + currentScroll - 122;
@@ -2232,8 +2399,8 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
     resume: ()=>{ window.open('Rohal_Kabir_Resume.pdf','_blank'); },
     email: ()=>{ location.href='mailto:kabirrohal7@gmail.com'; },
     github: ()=>{ window.open('https://github.com/rohal20','_blank'); },
-    term: ()=>{ chatEl.classList.remove('open'); openOv(termOv); if(!termOut.dataset.init) termInit(); termIn.focus(); },
-    game: ()=>{ chatEl.classList.remove('open'); openOv(gameOv); startGame(); },
+    term: ()=>{ if(window.__ach) window.__ach('terminal'); if(window.__bitReact) window.__bitReact('terminal'); chatEl.classList.remove('open'); openOv(termOv); if(!termOut.dataset.init) termInit(); termIn.focus(); },
+    game: ()=>{ if(window.__ach) window.__ach('game'); if(window.__bitReact) window.__bitReact('game'); chatEl.classList.remove('open'); openOv(gameOv); startGame(); },
     chat: ()=>{ closeOvs(); openChat(); },
     confetti: ()=>{ burstConfetti(window.innerWidth/2, window.innerHeight/2); },
     debug: ()=>{ const on=document.documentElement.classList.toggle('debug-mode'); showToast(on?'🐛 debug mode: ON':'debug mode: off'); }
@@ -2366,7 +2533,7 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
     return g + ' I’m Bit 👋';
   }
   let chatInit=false;
-  function openChat(){
+  function openChat(){ if(window.__ach) window.__ach('chat');
     ovs.forEach(o=>o.classList.remove('open')); chatEl.classList.add('open'); chatFab.style.display='none';
     if(!chatInit){ chatInit=true; const g=greetingLine()+" Tap a topic below and I'll fill you in."; addMsg('bot', g);
       [['💼 Experience','experience'],['🛠 Projects','projects'],['🧰 Skills','skills'],['🎓 Education','education'],['📜 Certificate','certificate'],['🤖 AI Copilot','copilot'],['🚗 Car Dealership','car dealership'],['📍 Where is he?','location'],['📄 Résumé','resume'],['📬 Contact','contact'],['🤝 Hire him','hire'],['🎮 Play a game','game'],['⌨️ Secrets','secret'],['🙋 Who are you?','bit']].forEach(([l,q])=>{ const b=document.createElement('button'); b.type='button'; b.textContent=l; b.onclick=()=>{ addMsg('me', esc(l)); botReply(q); }; chatChips.appendChild(b); }); }
@@ -2546,7 +2713,7 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
   document.body.appendChild(sndBtn);
   sndBtn.addEventListener('click', ()=>{
     sndOn = !sndOn; sndBtn.setAttribute('aria-pressed', String(sndOn)); document.getElementById('sndTxt').textContent = sndOn ? 'sound on' : 'sound off';
-    if(sndOn){ actx(); window.__sfx.pop(); showToast('🔊 sound on — soft clicks & whooshes', 2400); }
+    if(sndOn){ actx(); window.__sfx.pop(); if(window.__ach) window.__ach('sound'); showToast('🔊 sound on — soft clicks & whooshes', 2400); }
   });
   document.addEventListener('mouseover', e=>{
     if(!sndOn) return; const t=e.target.closest ? e.target.closest('.nb-btn,.nav-links a,.nav-cta,.work-card,.gh-card,.stack-panel,.contact-link,.pal-item,.chips button,.resume-stamp,.snd-btn,.chat-fab') : null;
@@ -2724,6 +2891,134 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
       tl.to({},{duration:.75+panels.length*0.11+.1});
     });
   })();
+
+
+  /* =====================================================================
+     v13: Bit companion, journey Bit, build log, secret room
+     ===================================================================== */
+  function miniBit(){
+    return '<svg class="mbit" viewBox="0 0 100 112" aria-hidden="true">'
+    + '<g class="mb-ant"><line x1="50" y1="30" x2="50" y2="15" stroke="#0B0B0F" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="10" r="7" fill="#FF5A5F" stroke="#0B0B0F" stroke-width="4"/></g>'
+    + '<rect x="11" y="52" width="10" height="24" rx="4" fill="#B892FF" stroke="#0B0B0F" stroke-width="3.5"/><rect x="79" y="52" width="10" height="24" rx="4" fill="#B892FF" stroke="#0B0B0F" stroke-width="3.5"/>'
+    + '<rect x="30" y="92" width="14" height="14" rx="4" fill="#0B0B0F"/><rect x="56" y="92" width="14" height="14" rx="4" fill="#0B0B0F"/>'
+    + '<rect x="18" y="30" width="64" height="64" rx="18" fill="#FFD23F" stroke="#0B0B0F" stroke-width="5"/>'
+    + '<g class="mb-eyes"><circle class="mb-eye" cx="37" cy="57" r="11" fill="#fff" stroke="#0B0B0F" stroke-width="3.5"/><circle class="mb-eye" cx="63" cy="57" r="11" fill="#fff" stroke="#0B0B0F" stroke-width="3.5"/>'
+    + '<g class="mb-pup"><circle cx="37" cy="57" r="4.6" fill="#0B0B0F"/></g><g class="mb-pup"><circle cx="63" cy="57" r="4.6" fill="#0B0B0F"/></g></g>'
+    + '<g class="mb-closed" fill="none" stroke="#0B0B0F" stroke-width="4" stroke-linecap="round"><path d="M27 58 Q37 65 47 58"/><path d="M53 58 Q63 65 73 58"/></g>'
+    + '<path class="mb-smile" d="M40 77 Q50 86 60 77" fill="none" stroke="#0B0B0F" stroke-width="4.5" stroke-linecap="round"/>'
+    + '<ellipse class="mb-o" cx="50" cy="80" rx="6" ry="7.5" fill="#0B0B0F"/>'
+    + '<path class="mb-wavy" d="M37 80 q4.5 -6 9 0 t9 0 t9 0" fill="none" stroke="#0B0B0F" stroke-width="4" stroke-linecap="round"/>'
+    + '<circle cx="28" cy="76" r="4.5" fill="#FF5A5F" opacity=".6"/><circle cx="72" cy="76" r="4.5" fill="#FF5A5F" opacity=".6"/>'
+    + '<g class="mb-acc"></g></svg>';
+  }
+  const ACC = {
+    cap:'<polygon points="50,12 86,26 50,40 14,26" fill="#0B0B0F"/><rect x="34" y="34" width="32" height="11" fill="#0B0B0F"/><line x1="82" y1="27" x2="82" y2="46" stroke="#FFD23F" stroke-width="3"/><circle cx="82" cy="48" r="3.5" fill="#FFD23F"/>',
+    badge:'<line x1="40" y1="94" x2="46" y2="100" stroke="#3B4CFF" stroke-width="3"/><line x1="60" y1="94" x2="54" y2="100" stroke="#3B4CFF" stroke-width="3"/><rect x="38" y="98" width="24" height="15" rx="3" fill="#fff" stroke="#0B0B0F" stroke-width="2.5"/><rect x="42" y="102" width="9" height="3" fill="#FF5A5F"/><rect x="42" y="107" width="16" height="2.5" fill="#0B0B0F"/>',
+    laptop:'<rect x="24" y="96" width="52" height="16" rx="3" fill="#2b2b36" stroke="#0B0B0F" stroke-width="3"/><text x="50" y="108" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" font-weight="700" fill="#8FE24B">&lt;/&gt;</text>',
+    cert:'<rect x="26" y="96" width="48" height="16" rx="2" fill="#fff" stroke="#0B0B0F" stroke-width="3"/><circle cx="64" cy="106" r="6" fill="#FF5A5F" stroke="#0B0B0F" stroke-width="2"/><rect x="31" y="101" width="22" height="2.5" fill="#0B0B0F"/><rect x="31" y="106" width="16" height="2.5" fill="#0B0B0F"/>',
+    party:'<polygon points="50,-4 68,32 32,32" fill="#B892FF" stroke="#0B0B0F" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="-5" r="5" fill="#FFD23F" stroke="#0B0B0F" stroke-width="3"/>'
+  };
+
+  /* shared eye-tracking for any mini Bit svg */
+  function lookAt(svg, cx, cy, maxd){
+    const eyes=svg.querySelectorAll('.mb-eye'), pups=svg.querySelectorAll('.mb-pup');
+    eyes.forEach((eye,i)=>{ const r=eye.getBoundingClientRect(); const ex=r.left+r.width/2, ey=r.top+r.height/2; const dx=cx-ex, dy=cy-ey, dist=Math.hypot(dx,dy)||1; const k=Math.min(1,dist/160)*(maxd||3.6); pups[i].setAttribute('transform','translate('+(dx/dist*k).toFixed(2)+' '+(dy/dist*k).toFixed(2)+')'); });
+  }
+
+  /* ---------- achievements + visits (local to this browser) ---------- */
+  const ACH = {
+    explorer:['🧭','Explorer','visited every section'], terminal:['⌨️','Hacker','opened the terminal'], game:['🎮','Gamer','played Bug Catcher'],
+    chat:['💬','Chatterbox','talked to Bit'], konami:['🎹','Old-school','entered the Konami code'], sound:['🔊','Audiophile','turned sound on'], end:['🏁','Finisher','scrolled to the very end']
+  };
+  let achSet = []; try{ achSet = JSON.parse(lsGet('rk-ach')||'[]'); }catch(e){ achSet=[]; }
+  const visitNo = (parseInt(lsGet('rk-visits')||'0',10)||0)+1; lsSet('rk-visits', String(visitNo));
+  const secretBtn=document.createElement('button'); secretBtn.className='secret-btn'; secretBtn.type='button';
+  (function(){ const foot=document.querySelector('footer .foot-row span:last-child'); if(foot) foot.appendChild(secretBtn); })();
+  const secretOv=document.getElementById('secretOv'); ovs.push(secretOv);
+  function refreshSecretBtn(){ const un=achSet.indexOf('end')>-1; secretBtn.textContent = un ? '🔓 secret room' : '🔒 secret room'; secretBtn.classList.toggle('unlocked', un); }
+  refreshSecretBtn();
+  window.__ach = function(k){
+    if(!ACH[k] || achSet.indexOf(k)>-1) return; achSet.push(k); lsSet('rk-ach', JSON.stringify(achSet)); refreshSecretBtn();
+    showToast('🏆 achievement: '+ACH[k][1]+' — '+ACH[k][2], 3200); if(window.__sfx) window.__sfx.section();
+    if(k==='end'){ setTimeout(()=>showToast('🔓 secret room unlocked — look in the footer', 3600), 3400); burstConfetti(window.innerWidth/2, window.innerHeight*0.4); }
+  };
+  function openSecret(){
+    if(achSet.indexOf('end')<0){ const max=Math.max(1,document.body.scrollHeight-window.innerHeight); showToast('🔒 locked — scroll to the very end ('+Math.min(99,Math.round(currentScroll/max*100))+'% there)', 2800); return; }
+    $('srGrid').innerHTML = Object.keys(ACH).map(k=>'<div class="sr-tile'+(achSet.indexOf(k)>-1?' got':'')+'"><b>'+ACH[k][0]+'</b>'+ACH[k][1]+'<br><span style="font-weight:500;opacity:.8">'+ACH[k][2]+'</span></div>').join('');
+    $('srFoot').textContent = 'visit #'+visitNo+' · '+achSet.length+'/'+Object.keys(ACH).length+' achievements · stored only in your browser, nothing is tracked';
+    $('srReward').innerHTML = achSet.length>=5
+      ? '🎁 You are a platinum explorer. Mention code <b>RK-ROOM</b> in your message and I will know you found this.<br><a href="mailto:kabirrohal7@gmail.com?subject='+encodeURIComponent('[RK-ROOM] I found your secret room')+'">✉ email Rohal with the code</a>'
+      : '🎁 Unlock 5 achievements for a small surprise. Hint: try the terminal, the game, the chat, and the Konami code.';
+    openOv(secretOv);
+  }
+  secretBtn.addEventListener('click', openSecret); $('srX').addEventListener('click', ()=>secretOv.classList.remove('open'));
+  cmds.push(['🔓','Secret room','easter egg achievements',openSecret]);
+
+  /* ---------- Bit companion (floating after the hero) ---------- */
+  const dock=document.createElement('div'); dock.className='bit-dock away';
+  dock.innerHTML='<div class="bit-bubble" id="bdBubble"></div><div class="bit-zzz">z<i>z</i><b>Z</b></div><button class="bit-btn" type="button" aria-label="Chat with Bit">'+miniBit()+'</button>';
+  document.body.appendChild(dock);
+  const dockSvg=dock.querySelector('.mbit'), dockBtn=dock.querySelector('.bit-btn'), bdBubble=dock.querySelector('#bdBubble');
+  let bdT=null, lastAct=performance.now(), asleep=false, stateT=null;
+  function dockSay(msg, ms){ if(dock.classList.contains('away')){ if(typeof mascotSay==='function') mascotSay(msg, ms||2800); return; } bdBubble.textContent=msg; bdBubble.classList.add('show'); clearTimeout(bdT); bdT=setTimeout(()=>bdBubble.classList.remove('show'), ms||3000); }
+  function dockState(cls, ms){ dockSvg.classList.add(cls); clearTimeout(stateT); stateT=setTimeout(()=>dockSvg.classList.remove(cls), ms); }
+  window.__bitReact = function(kind){
+    if(kind==='terminal'){ dockState('wow',1800); dockSay('whoa — hacker mode? 😮',3000); }
+    else if(kind==='game'){ dockState('wow',1200); dockSay('bug hunt! 🐛 go go go',2600); }
+    else if(kind==='secret'){ dockState('wow',1200); dockSay('you found the secret room 🔓',2800); }
+  };
+  dockBtn.addEventListener('click', ()=>{ if(chatFab) chatFab.click(); });
+  function wake(){
+    lastAct=performance.now();
+    if(asleep){ asleep=false; dockSvg.classList.remove('sleep'); dock.classList.remove('asleep'); dockState('wow',900); dockSay('!! I’m up, I’m up ☕',2400); }
+  }
+  ['mousemove','keydown','touchstart','wheel','pointerdown'].forEach(ev=>window.addEventListener(ev, wake, {passive:true}));
+  let lookRaf=0, lx=0, ly=0;
+  window.addEventListener('mousemove', e=>{ lx=e.clientX; ly=e.clientY; if(lookRaf) return; lookRaf=requestAnimationFrame(()=>{ lookRaf=0; if(!dock.classList.contains('away') && !asleep) lookAt(dockSvg, lx, ly, 3.6); }); }, {passive:true});
+  const dockLean = gsap.quickTo(dockBtn,'rotation',{duration:.5,ease:'power3'});
+  const secQuips = {replay:'Replay time — this one is a story.', build:'This is how he builds. Worth a read.', about:'Meet the human behind the commits.', metrics:'Numbers don’t lie 📊 hover a card!', work:'Click a card for the full case study.', github:'Yes, that heatmap is live.', stack:'Try the shuffle button 🃏', journey:'Follow me down the line →', log:'Fresh build notes. Tap one!', contact:'Say hi! He replies within a day.'};
+  const quipped = {}; let curSec=null, lastScroll=currentScroll, dizzyAt=0, hotCount=0;
+  const secEls = Array.from(document.querySelectorAll('section[id]')); const visited = {};
+  /* journey rider */
+  const jh = document.getElementById('journeyHead'), jItems = Array.from(document.querySelectorAll('.journey-item'));
+  let jbSvg=null, jbPop=null, jbIdx=-2;
+  if(jh){ jh.innerHTML='<div class="jb-bit">'+miniBit()+'<span class="jb-pop"></span></div>'; jbSvg=jh.querySelector('.mbit'); jbPop=jh.querySelector('.jb-pop'); jbSvg.querySelectorAll('.mb-pup').forEach(p=>p.setAttribute('transform','translate(2.6 1.6)')); }
+  const jAcc = ['cap','badge','cap','laptop','cert','party'], jPop = ['🎓','🪪','🎓','💻','📜','🚀'];
+  function updateJourneyBit(){
+    if(!jbSvg) return; let idx=-1; jItems.forEach((it,i)=>{ if(it.classList.contains('lit')) idx=i; });
+    if(idx===jbIdx) return; jbIdx=idx; const acc=jbSvg.querySelector('.mb-acc'); acc.innerHTML = idx>-1 ? ACC[jAcc[idx]||'party'] : '';
+    if(idx>-1 && !reduceMotion){ const box=jh.querySelector('.jb-bit'); gsap.fromTo(box,{y:0},{y:-9,duration:.18,yoyo:true,repeat:1,ease:'power2.out'}); jbPop.textContent=jPop[idx]||'✨'; gsap.fromTo(jbPop,{opacity:1,y:0,scale:.6},{opacity:0,y:-26,scale:1.3,duration:1.1,ease:'power2.out'}); if(window.__sfx) window.__sfx.tick(); }
+  }
+  setInterval(()=>{
+    const now=performance.now();
+    /* away while the big hero Bit is on screen */
+    const hero=document.getElementById('hero'); const heroVisible = hero && hero.getBoundingClientRect().bottom > window.innerHeight*0.55;
+    dock.classList.toggle('away', !!heroVisible);
+    /* scroll reactions */
+    const dv=currentScroll-lastScroll; lastScroll=currentScroll; const sp=Math.abs(dv);
+    dockLean(Math.max(-9,Math.min(9,dv*0.25)));
+    if(!asleep && !heroVisible && Math.abs(dv)>2){ dockSvg.querySelectorAll('.mb-pup').forEach(p=>p.setAttribute('transform','translate(0 '+(dv>0?3.4:-3.4)+')')); }
+    hotCount = sp>48 ? hotCount+1 : 0;
+    if(hotCount>=2 && now-dizzyAt>9000 && !asleep){ dizzyAt=now; dockState('dizzy',1500); dockSay('weeeee 🌀',1800); }
+    /* section change quips + explorer + end of page */
+    let cs=null; secEls.forEach(s=>{ if(s.getBoundingClientRect().top < window.innerHeight*0.45) cs=s.id; });
+    if(cs){ visited[cs]=1; if(cs!==curSec){ curSec=cs; if(secQuips[cs] && !quipped[cs] && !asleep){ quipped[cs]=1; dockSay(secQuips[cs],3200); } } }
+    if(secEls.length && secEls.every(s=>visited[s.id])) window.__ach('explorer');
+    const max=document.body.scrollHeight-window.innerHeight; if(max>400 && currentScroll/max>0.965) window.__ach('end');
+    /* idle -> sleep */
+    if(!asleep && now-lastAct>25000){ asleep=true; dockSvg.classList.add('sleep'); dock.classList.add('asleep'); dockSvg.classList.remove('wow','dizzy'); dockSay('…zzz',2200); }
+    updateJourneyBit();
+  }, 100);
+
+  /* ---------- build log: expandable notes ---------- */
+  document.querySelectorAll('.log-card .log-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card=btn.closest('.log-card'); const open=!card.classList.contains('open'); card.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', String(open)); btn.querySelector('span').textContent = open ? 'close the note' : 'read the note';
+      if(window.__sfx) window.__sfx.pop();
+      setTimeout(()=>{ ScrollTrigger.refresh(); if(typeof setBodyHeight==='function') setBodyHeight(); }, 520);
+    });
+  });
 
 })();
 </script>
