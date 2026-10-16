@@ -870,6 +870,19 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
 
 .loader{z-index:1002!important;background:transparent!important;}
 .boot-skip{color:#8A8A94!important;opacity:1!important;}
+
+/* v14 cursor: chunky yellow arrow + trailing ring */
+.cursor-dot{width:32px;height:32px;border-radius:0;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath d='M4 3 L4 23 L9.5 18 L13.5 27 L17.5 25.2 L13.6 16.5 L21 16 Z' fill='%23FFD23F' stroke='%23fff' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M4 3 L4 23 L9.5 18 L13.5 27 L17.5 25.2 L13.6 16.5 L21 16 Z' fill='%23FFD23F' stroke='%230A0A0F' stroke-width='2.6' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain;z-index:999;transform:translate(-5px,-4px);transition:transform .15s var(--ease);filter:drop-shadow(3px 3px 0 rgba(10,10,15,.9));}
+.cursor-dot.hot{transform:translate(-5px,-4px) scale(1.3) rotate(-14deg);}
+.cursor-dot.down{transform:translate(-5px,-4px) scale(.85);}
+.cursor-ring{width:46px;height:46px;border:3px solid var(--ink);box-shadow:0 0 0 2px #fff;mix-blend-mode:normal;background:rgba(255,210,63,.22);z-index:997;}
+.cursor-ring.active{width:88px;height:88px;background:var(--yellow);box-shadow:4px 4px 0 var(--ink);}
+.cursor-ring .cursor-label{font-size:10px;}
+.cursor-spark{position:fixed;width:9px;height:9px;background:var(--yellow);border:2px solid var(--ink);pointer-events:none;z-index:996;}
+body.has-cursor input,body.has-cursor textarea{cursor:text;}
+.chat-fab{display:none!important;}
+.bit-dock{bottom:84px!important;}
+body.chat-open .bit-dock{opacity:0!important;pointer-events:none!important;}
 </style>
 </head>
 <body>
@@ -1638,11 +1651,17 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
     window.addEventListener('mousemove', e=>{ dot.style.left=e.clientX+'px'; dot.style.top=e.clientY+'px'; xTo(e.clientX); yTo(e.clientY); });
     document.addEventListener('mouseover', e=>{
       const el = e.target.closest('[data-magnetic], a, button, .node, .metric-card, .work-card, .stack-panel');
-      if(el){ ring.classList.add('active'); label.textContent = el.dataset.cursor || ''; }
+      if(el){ ring.classList.add('active'); dot.classList.add('hot'); label.textContent = el.dataset.cursor || ''; }
     });
+    window.addEventListener('mousedown', e=>{ dot.classList.add('down');
+      if(reduceMotion) return;
+      for(let i=0;i<7;i++){ const p=document.createElement('i'); p.className='cursor-spark'; p.style.left=e.clientX+'px'; p.style.top=e.clientY+'px'; document.body.appendChild(p);
+        const a=Math.PI*2*i/7+Math.random()*.5, d=26+Math.random()*26;
+        gsap.fromTo(p,{x:0,y:0,rotate:0,opacity:1},{x:Math.cos(a)*d,y:Math.sin(a)*d,rotate:180,opacity:0,duration:.5,ease:'power2.out',onComplete:()=>p.remove()}); } });
+    window.addEventListener('mouseup', ()=> dot.classList.remove('down'));
     document.addEventListener('mouseout', e=>{
       const el = e.target.closest('[data-magnetic], a, button, .node, .metric-card, .work-card, .stack-panel');
-      if(el){ ring.classList.remove('active'); label.textContent=''; }
+      if(el){ ring.classList.remove('active'); dot.classList.remove('hot'); label.textContent=''; }
     });
   }
 
@@ -2534,11 +2553,11 @@ html.debug-mode *{outline:1px solid rgba(255,0,110,.45)!important;outline-offset
   }
   let chatInit=false;
   function openChat(){ if(window.__ach) window.__ach('chat');
-    ovs.forEach(o=>o.classList.remove('open')); chatEl.classList.add('open'); chatFab.style.display='none';
+    ovs.forEach(o=>o.classList.remove('open')); chatEl.classList.add('open'); document.body.classList.add('chat-open'); chatFab.style.display='none';
     if(!chatInit){ chatInit=true; const g=greetingLine()+" Tap a topic below and I'll fill you in."; addMsg('bot', g);
       [['💼 Experience','experience'],['🛠 Projects','projects'],['🧰 Skills','skills'],['🎓 Education','education'],['📜 Certificate','certificate'],['🤖 AI Copilot','copilot'],['🚗 Car Dealership','car dealership'],['📍 Where is he?','location'],['📄 Résumé','resume'],['📬 Contact','contact'],['🤝 Hire him','hire'],['🎮 Play a game','game'],['⌨️ Secrets','secret'],['🙋 Who are you?','bit']].forEach(([l,q])=>{ const b=document.createElement('button'); b.type='button'; b.textContent=l; b.onclick=()=>{ addMsg('me', esc(l)); botReply(q); }; chatChips.appendChild(b); }); }
       }
-  function closeChat(){ chatEl.classList.remove('open'); chatFab.style.display=''; try{ speechSynthesis.cancel(); }catch(e){} }
+  function closeChat(){ chatEl.classList.remove('open'); document.body.classList.remove('chat-open'); chatFab.style.display=''; try{ speechSynthesis.cancel(); }catch(e){} }
   chatFab.addEventListener('click', openChat);
   $('chatX').addEventListener('click', closeChat);
   $('chatSnd').addEventListener('click', ()=>{ voiceOn=!voiceOn; $('chatSnd').textContent = voiceOn?'🔊':'🔇'; if(voiceOn) speak(greetingLine()+' Voice is on.'); else try{ speechSynthesis.cancel(); }catch(e){} });
