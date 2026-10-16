@@ -3283,6 +3283,10 @@
     konami: ['🎹', 'Old-school', 'entered the Konami code'],
     sound: ['🔊', 'Audiophile', 'turned sound on'],
     end: ['🏁', 'Finisher', 'scrolled to the very end'],
+    sudo: ['🔑', 'Root access', 'ran sudo hire rohal'],
+    npm: ['📦', 'Auditor', 'ran npm ls on my skills'],
+    pager: ['🚨', 'On-call hero', 'fixed the Friday deploy'],
+    stylist: ['🎨', 'Stylist', 'restyled the whole site'],
   };
   let achSet = [];
   try {
@@ -3560,4 +3564,11 @@
       }, 520);
     });
   });
+
+  /* ---------- hand-off to js/features.js (loaded after this file) ---------- */
+  window.__rk = {
+    TC, tp, esc, A, ovs, cmds, openOv, closeOvs, burstConfetti, goTo, showToast, reduceMotion,
+    get termOpen() { return termOv.classList.contains('open'); },
+    closeTerm: () => termOv.classList.remove('open'),
+  };
 })();

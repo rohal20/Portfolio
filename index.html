@@ -28,6 +28,7 @@
 <meta name="twitter:image" content="https://portfolio-deploy-beta-blond.vercel.app/og-image.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rohal Kabir","jobTitle":"Full-Stack Developer","url":"https://portfolio-deploy-beta-blond.vercel.app/","email":"mailto:kabirrohal7@gmail.com","sameAs":["https://github.com/rohal20"],"address":{"@type":"PostalAddress","addressLocality":"Karachi","addressCountry":"PK"},"alumniOf":"Brock University","knowsAbout":["React","Node.js","Django","TypeScript","OpenTelemetry","Observability"]}</script>
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/features.css">
 </head>
 <body>
 <a href="#hero" class="skip-link">Skip to content</a>
@@ -106,6 +107,23 @@
   <div class="term-bar"><i style="background:#FF5A5F"></i><i style="background:#FFD23F"></i><i style="background:#8FE24B"></i>&nbsp; rohal@portfolio: ~ &nbsp;<span style="margin-left:auto">esc to close</span></div>
   <div class="term-out" id="termOut"></div>
   <div class="term-row"><span>visitor@rohal.dev:~$</span><input id="termIn" autocomplete="off" spellcheck="false" autocapitalize="off"></div>
+</div></div>
+
+<div class="ov term npm" id="npmOv"><div class="ov-box term-box">
+  <div class="term-bar"><i style="background:#FF5A5F"></i><i style="background:#FFD23F"></i><i style="background:#8FE24B"></i>&nbsp; rohal@portfolio: ~/skills &nbsp;<span style="margin-left:auto">esc to close &middot; click to skip</span></div>
+  <div class="term-out npm-out" id="npmOut"></div>
+  <div class="term-row"><span>visitor@rohal.dev:~$</span><span class="npm-cmd" id="npmCmd"></span></div>
+</div></div>
+
+<div class="pager" id="pager" role="alert" aria-live="assertive">
+  <div class="pg-ico">&#128680;</div>
+  <div class="pg-txt"><b>PagerDuty &middot; SEV1 &middot; triggered</b><span>prod-web-01 &middot; 5xx rate 98% &middot; &ldquo;worked on my machine&rdquo;</span></div>
+  <button type="button" id="pagerAck">ACK</button>
+</div>
+<div class="ov crash" id="crashOv"><div class="ov-box term-box crash-box">
+  <div class="term-bar crash-bar"><i style="background:#FF5A5F"></i><i style="background:#FFD23F"></i><i style="background:#8FE24B"></i>&nbsp; prod-web-01 &mdash; INCIDENT #<span id="crashNo">4096</span><button type="button" class="crash-giveup" id="crashGiveUp">give up &middot; auto-rollback</button></div>
+  <div class="term-out crash-out" id="crashOut"></div>
+  <div class="term-row"><span>oncall@prod:~$</span><input id="crashIn" autocomplete="off" spellcheck="false" autocapitalize="off" aria-label="on-call terminal"></div>
 </div></div>
 
 <button class="chat-fab" id="chatFab" aria-label="Chat with Bit"><span class="dot"></span>ask Bit 💬</button>
@@ -496,6 +514,7 @@
     <h2 class="section-title kinetic reveal">Tech<br/>stack</h2>
     <p class="section-sub reveal">Grouped like services in a system diagram — drag the dots, they mark how long I've used each.</p>
     <button class="shuffle-btn reveal" id="shuffleBtn" data-magnetic data-cursor="shuffle">🔀 shuffle the board</button>
+    <button class="shuffle-btn npm-btn reveal" id="npmBtn" data-magnetic data-cursor="npm ls">📦 npm ls</button>
 
     <div class="stack-grid" id="stackGrid">
       <div class="stack-panel nb-card">
@@ -620,6 +639,15 @@
       </div>
     </article>
     </div>
+
+    <div class="deploy-zone reveal" id="deployZone">
+      <div class="dz-text">
+        <span class="dz-tag">&#9888; danger zone</span>
+        <h3>It&rsquo;s Friday, 4:59&nbsp;PM.</h3>
+        <p>The tests are green. The weekend is calling. What could possibly go wrong? Go on &mdash; push to production.</p>
+      </div>
+      <button class="deploy-btn" id="deployBtn" type="button" data-magnetic data-cursor="don't"><span class="db-ico">&#128640;</span><span>Deploy to production</span></button>
+    </div>
   </div>
 </section>
 
@@ -677,9 +705,33 @@
 
 </div></div>
 
+<button class="tweak-btn" id="tweakBtn" type="button" aria-expanded="false" aria-controls="tweakDrawer" data-magnetic>&#127912; tweak theme</button>
+<aside class="tweak" id="tweakDrawer" aria-label="Theme tweaker" aria-hidden="true">
+  <div class="tw-head"><b>Tweak my theme</b><button class="tw-x" id="twX" type="button" aria-label="Close theme tweaker">&#10005;</button></div>
+  <p class="tw-sub">Every colour, border and shadow on this site is a CSS variable. Break it, then copy it.</p>
+  <div class="tw-label">presets</div>
+  <div class="tw-presets" id="twPresets"></div>
+  <div class="tw-label"><span>brand colour</span><output id="twHueOut"></output></div>
+  <input class="tw-range tw-hue" id="twHue" type="range" min="0" max="360" step="1" aria-label="Brand colour hue">
+  <div class="tw-label"><span>shadow offset</span><output id="twShOut"></output></div>
+  <input class="tw-range" id="twSh" type="range" min="0" max="16" step="1" aria-label="Shadow offset">
+  <div class="tw-label"><span>border thickness</span><output id="twBwOut"></output></div>
+  <input class="tw-range" id="twBw" type="range" min="0" max="7" step="0.5" aria-label="Border thickness">
+  <div class="tw-label"><span>corner radius</span><output id="twROut"></output></div>
+  <input class="tw-range" id="twR" type="range" min="0" max="200" step="5" aria-label="Corner radius">
+  <pre class="tw-code" id="twCode" aria-label="Your theme as CSS variables"></pre>
+  <div class="tw-actions">
+    <button type="button" id="twCopy" class="tw-primary">copy my theme</button>
+    <button type="button" id="twRand">&#127922; surprise me</button>
+    <button type="button" id="twReset">reset</button>
+  </div>
+</aside>
+<button class="presence" id="presence" type="button" aria-live="polite" title="Click to hide or show other visitors' cursors"><i class="pr-dot"></i><span id="presTxt">just you</span></button>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>window.addEventListener("load",function(){if(typeof gsap==="undefined"||typeof ScrollTrigger==="undefined"){document.documentElement.classList.add("no-gsap");}});</script>
 <script src="js/main.js"></script>
+<script src="js/features.js"></script>
 </body>
 </html>
