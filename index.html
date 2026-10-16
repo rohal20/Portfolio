@@ -883,6 +883,13 @@ body.has-cursor input,body.has-cursor textarea{cursor:text;}
 .chat-fab{display:none!important;}
 .bit-dock{bottom:84px!important;}
 body.chat-open .bit-dock{opacity:0!important;pointer-events:none!important;}
+
+/* v15 fixes: tidy left stack, calmer hover cursor */
+.snd-btn{bottom:80px!important;}
+.bit-dock{bottom:130px!important;}
+@media(max-width:600px){.snd-btn{bottom:72px!important;}.bit-dock{bottom:122px!important;}}
+.cursor-ring.active{width:46px!important;height:46px!important;background:rgba(255,210,63,.22)!important;box-shadow:0 0 0 2px #fff!important;}
+.cursor-ring.active .cursor-label{opacity:0!important;}
 </style>
 </head>
 <body>
