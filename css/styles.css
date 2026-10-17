@@ -3360,7 +3360,7 @@ html.debug-mode * {
   padding: 18px;
   box-shadow: calc(8px * var(--sh-k)) calc(8px * var(--sh-k)) 0 rgba(0, 0, 0, 0.35);
 }
-.case-diagram h4 {
+.case-diagram h3 {
   font-family: var(--font-mono);
   color: var(--green);
   font-size: 12px;
@@ -3393,7 +3393,7 @@ html.debug-mode * {
   background: #17171d;
   box-shadow: calc(5px * var(--sh-k)) calc(5px * var(--sh-k)) 0 rgba(255, 255, 255, 0.12);
 }
-.gh-live h4 {
+.gh-live h3 {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--green);
@@ -3642,7 +3642,7 @@ html.debug-mode * {
 .gh-live:not(.has-heat) {
   grid-template-columns: 1fr;
 }
-.gh-live h4 {
+.gh-live h3 {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--green);
@@ -3791,7 +3791,7 @@ html.debug-mode * {
   padding: 10px 12px;
   min-width: 0;
 }
-.mp h5 {
+.mp h3 {
   font-family: var(--font-mono);
   font-size: 11px;
   color: #8a8a94;
@@ -4483,7 +4483,7 @@ html.debug-mode * {
   line-height: 1.65;
   font-weight: 500;
 }
-.log-more-in h5 {
+.log-more-in h4 {
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -4491,7 +4491,7 @@ html.debug-mode * {
   margin: 12px 0 4px;
   color: var(--brand);
 }
-.log-more-in h5:first-child {
+.log-more-in h4:first-child {
   margin-top: 0;
 }
 .log-more-in p {
@@ -4762,4 +4762,67 @@ html.lite .ekg-track {
 }
 html.lite .ekg path {
   filter: none;
+}
+
+/* ============================================================
+   ACCESSIBILITY (audit pass)
+   ============================================================ */
+/* headings were re-levelled for a correct outline; keep their original look */
+.case-diagram h3,
+.gh-live h3,
+.mp h3 {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.case-diagram h3,
+.gh-live h3 {
+  font-weight: 700;
+}
+/* brand-coloured text on black fails 4.5:1; a tint of the brand passes and follows the theme drawer hue */
+.nav-links a:hover,
+.nav-links a.active,
+.nav-cta {
+  color: color-mix(in srgb, var(--brand) 55%, #fff);
+}
+.nav-logo {
+  font-size: 24px; /* 24px counts as large text, where 3:1 is enough on the blue bar */
+}
+.work-card:focus-visible {
+  outline: 4px solid var(--ink);
+  outline-offset: 4px;
+}
+
+/* ============================================================
+   CASE STUDY STORY BLOCKS
+   ============================================================ */
+.case-story {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 26px 0 8px;
+}
+.case-sb {
+  background: var(--white);
+  color: var(--ink);
+  border: calc(4px * var(--bw-k)) solid var(--ink);
+  border-radius: calc(18px * var(--r-k));
+  padding: 18px;
+  box-shadow: calc(6px * var(--sh-k)) calc(6px * var(--sh-k)) 0 var(--ink);
+}
+.case-sb h3 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.case-sb p {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.5;
+}
+@media (max-width: 820px) {
+  .case-story {
+    grid-template-columns: 1fr;
+  }
 }

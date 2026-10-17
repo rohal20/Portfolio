@@ -1008,4 +1008,41 @@
     // expose a tiny hook for tests
     window.__rkPeers = { count: () => peers.size, me };
   })();
+
+  /* ---------- 6. small polish: eyebrow scramble + code-window caret ---------- */
+  (function polish() {
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    const GLYPHS = '01<>/{}[]#$%&*+=';
+    function scramble(el) {
+      const final = el.textContent;
+      let frame = 0;
+      const total = 16;
+      const tick = () => {
+        frame++;
+        const keep = Math.floor((frame / total) * final.length);
+        let out = '';
+        for (let i = 0; i < final.length; i++) {
+          const ch = final[i];
+          out += i < keep || ch === ' ' || ch === '◆' ? ch : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+        }
+        el.textContent = out;
+        if (frame < total) setTimeout(tick, 32);
+        else el.textContent = final;
+      };
+      tick();
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          io.unobserve(en.target);
+          if (!root.classList.contains('lite')) scramble(en.target);
+        });
+      },
+      { threshold: 0.6 }
+    );
+    document.querySelectorAll('.eyebrow').forEach((el) => {
+      if (el.children.length === 0) io.observe(el); // plain-text labels only
+    });
+  })();
 })();

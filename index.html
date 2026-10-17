@@ -6,6 +6,7 @@
 <title>Rohal Kabir — Full-Stack Developer</title>
 <meta name="description" content="Rohal Kabir is a full-stack developer (React, Node.js, Django) who builds observability-driven systems. Open to remote roles. Explore his work, stack and AI Incident Copilot." />
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,24 +23,27 @@
 <meta property="og:image" content="https://portfolio-deploy-beta-blond.vercel.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rohal Kabir — Full-Stack Developer portfolio">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Rohal Kabir — Full-Stack Developer">
 <meta name="twitter:description" content="Rohal Kabir is a full-stack developer (React, Node.js, Django) who builds observability-driven systems. Open to remote roles. Explore his work, stack and AI Incident Copilot.">
 <meta name="twitter:image" content="https://portfolio-deploy-beta-blond.vercel.app/og-image.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rohal Kabir","jobTitle":"Full-Stack Developer","url":"https://portfolio-deploy-beta-blond.vercel.app/","email":"mailto:kabirrohal7@gmail.com","sameAs":["https://github.com/rohal20"],"address":{"@type":"PostalAddress","addressLocality":"Karachi","addressCountry":"PK"},"alumniOf":"Brock University","knowsAbout":["React","Node.js","Django","TypeScript","OpenTelemetry","Observability"]}</script>
+<meta name="twitter:image:alt" content="Rohal Kabir — Full-Stack Developer portfolio">
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Person","name":"Rohal Kabir","jobTitle":"Full-Stack Developer","url":"https://portfolio-deploy-beta-blond.vercel.app/","email":"mailto:kabirrohal7@gmail.com","sameAs":["https://github.com/rohal20"],"address":{"@type":"PostalAddress","addressLocality":"Karachi","addressCountry":"PK"},"alumniOf":"Brock University","knowsAbout":["React","Node.js","Django","TypeScript","OpenTelemetry","Observability"],"image":"https://portfolio-deploy-beta-blond.vercel.app/og-image.png","description":"Full-stack developer (React, Node.js, Django) who builds observability-driven systems."},{"@context":"https://schema.org","@type":"WebSite","name":"Rohal Kabir — Portfolio","url":"https://portfolio-deploy-beta-blond.vercel.app/","inLanguage":"en"}]</script>
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/features.css">
 </head>
 <body>
 <a href="#hero" class="skip-link">Skip to content</a>
-<canvas id="fxCanvas"></canvas>
+<canvas id="fxCanvas" aria-hidden="true"></canvas>
 <div class="toast" id="toast"></div>
-<div class="top-bar"><div class="top-bar-track" id="topBarTrack"></div></div>
+<div class="top-bar" aria-hidden="true"><div class="top-bar-track" id="topBarTrack"></div></div>
 
 
-<div class="trace-progress" id="traceProgress"></div>
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></div>
+<div class="trace-progress" id="traceProgress" role="presentation" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"><span class="cursor-label" id="cursorLabel"></span></div>
 
 <div class="loader" id="loader">
   <div class="loader-name" id="loaderName">HEY THERE</div>
@@ -106,7 +110,7 @@
 <div class="ov term" id="termOv"><div class="ov-box term-box">
   <div class="term-bar"><i style="background:#FF5A5F"></i><i style="background:#FFD23F"></i><i style="background:#8FE24B"></i>&nbsp; rohal@portfolio: ~ &nbsp;<span style="margin-left:auto">esc to close</span></div>
   <div class="term-out" id="termOut"></div>
-  <div class="term-row"><span>visitor@rohal.dev:~$</span><input id="termIn" autocomplete="off" spellcheck="false" autocapitalize="off"></div>
+  <div class="term-row"><span>visitor@rohal.dev:~$</span><input id="termIn" aria-label="Terminal command" autocomplete="off" spellcheck="false" autocapitalize="off"></div>
 </div></div>
 
 <div class="ov term npm" id="npmOv"><div class="ov-box term-box">
@@ -175,6 +179,7 @@
 
 <div id="smooth-wrapper"><div id="smooth-content">
 
+<main id="main">
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="px" data-depth="30" style="top:13%;left:5%;"><div class="hero-doodle star" style="position:relative;animation:floaty 5s ease-in-out infinite;">✦</div></div>
@@ -192,9 +197,9 @@
   <div class="wrap hero-grid">
     <div>
       <div class="hey-card nb-card">
-        <a class="resume-stamp" href="Rohal_Kabir_Resume.pdf" download="Rohal_Kabir_Resume.pdf" aria-label="Download résumé (PDF)" data-cursor="download">
-          <svg class="ring" viewBox="0 0 120 120"><defs><path id="stampPath" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs><circle cx="60" cy="60" r="58" fill="#FFD23F" stroke="#0B0B0F" stroke-width="3"/><text font-family="IBM Plex Mono" font-size="11.5" font-weight="700" fill="#0B0B0F"><textPath href="#stampPath" textLength="268" lengthAdjust="spacing">DOWNLOAD RÉSUMÉ • PDF • FREE •</textPath></text></svg>
-          <span class="core"><span>↓</span></span>
+        <a class="resume-stamp" href="Rohal_Kabir_Resume.pdf" download="Rohal_Kabir_Resume.pdf" aria-label="Download résumé • PDF • free" data-cursor="download">
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><defs><path id="stampPath" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs><circle cx="60" cy="60" r="58" fill="#FFD23F" stroke="#0B0B0F" stroke-width="3"/><text font-family="IBM Plex Mono" font-size="11.5" font-weight="700" fill="#0B0B0F"><textPath href="#stampPath" textLength="268" lengthAdjust="spacing">DOWNLOAD RÉSUMÉ • PDF • FREE •</textPath></text></svg>
+          <span class="core" aria-hidden="true"><span>↓</span></span>
         </a>
         <div class="hey-title" id="heyTitle">HEY!</div>
         <div class="hey-divider"></div>
@@ -403,8 +408,8 @@
   </div>
 
   <div class="wrap work-wrap">
-    <div class="work-track" id="workTrack">
-      <div class="work-card">
+    <div class="work-track" id="workTrack" role="region" aria-label="Work experience and projects">
+      <div class="work-card" tabindex="0" role="button">
         <div class="work-card-top">
           <div class="work-card-name">PITAMA<br/>FOODS</div>
           <div class="work-card-visual" style="background:var(--coral);color:var(--ink);">SOFTWARE<br/>DEVELOPER I<span class="stamp">IN<br/>PROD</span></div>
@@ -418,7 +423,7 @@
         <div class="work-tags"><span>React</span><span>TypeScript</span><span>Node.js</span><span>SQL</span><span>Microservices</span></div>
       </div>
 
-      <div class="work-card">
+      <div class="work-card" tabindex="0" role="button">
         <div class="work-card-top">
           <div class="work-card-name">E PLANET<br/>GLOBAL</div>
           <div class="work-card-visual" style="background:var(--yellow);color:var(--ink);">SOFTWARE<br/>DEV INTERN<span class="stamp">SHIPPED<br/>✓</span></div>
@@ -432,7 +437,7 @@
         <div class="work-tags"><span>React</span><span>Django</span><span>.NET</span><span>SQL Server</span><span>Docker</span></div>
       </div>
 
-      <div class="work-card">
+      <div class="work-card" tabindex="0" role="button">
         <div class="work-card-top">
           <div class="work-card-name">AI INCIDENT<br/>COPILOT</div>
           <div class="work-card-visual" style="background:var(--green);color:var(--ink);">SIDE<br/>PROJECT<span class="stamp">SIDE<br/>QUEST</span></div>
@@ -444,7 +449,7 @@
         <div class="work-tags"><span>Node.js</span><span>Prometheus</span><span>Grafana</span><span>Jaeger</span><span>Docker</span></div>
       </div>
 
-      <div class="work-card">
+      <div class="work-card" tabindex="0" role="button">
         <div class="work-card-top">
           <div class="work-card-name">CAR<br/>DEALERSHIP</div>
           <div class="work-card-visual" style="background:var(--purple);color:var(--ink);">SIDE<br/>PROJECT<span class="stamp">100+<br/>LISTED</span></div>
@@ -613,7 +618,7 @@
         <p class="log-tldr">Three dashboards, one tired engineer. So I let an LLM agent read them together.</p>
         <div class="log-tags"><span>Claude API</span><span>Prometheus</span><span>Grafana</span><span>Jaeger</span></div>
         <button class="log-btn" type="button" aria-expanded="false" data-magnetic data-cursor="read"><span>read the note</span><span class="arr">&#9656;</span></button>
-        <div class="log-more"><div><div class="log-more-in"><h5>The problem</h5><p>When something breaks you tab-switch between Prometheus (metrics), Grafana (dashboards) and Jaeger (traces) and correlate by eye. It is slow, and it happens at the worst possible time.</p><h5>The approach</h5><p>A thin adapter layer normalises each source into one shape, so the agent can reason over metrics and traces together. The Claude API then turns the correlated signals into a plain-English explanation.</p><h5>The lesson</h5><p>The model was not the hard part. Clean, comparable inputs were.</p><span class="log-stat">UP TO -90% DIAGNOSIS TIME</span></div></div></div>
+        <div class="log-more"><div><div class="log-more-in"><h4>The problem</h4><p>When something breaks you tab-switch between Prometheus (metrics), Grafana (dashboards) and Jaeger (traces) and correlate by eye. It is slow, and it happens at the worst possible time.</p><h4>The approach</h4><p>A thin adapter layer normalises each source into one shape, so the agent can reason over metrics and traces together. The Claude API then turns the correlated signals into a plain-English explanation.</p><h4>The lesson</h4><p>The model was not the hard part. Clean, comparable inputs were.</p><span class="log-stat">UP TO -90% DIAGNOSIS TIME</span></div></div></div>
       </div>
     </article>
     <article class="log-card nb-card reveal" id="note02">
@@ -624,7 +629,7 @@
         <p class="log-tldr">Wholesale orders lived in spreadsheets and inboxes. I replaced that with one single-page app.</p>
         <div class="log-tags"><span>React</span><span>TypeScript</span><span>Node.js</span><span>SQL</span></div>
         <button class="log-btn" type="button" aria-expanded="false" data-magnetic data-cursor="read"><span>read the note</span><span class="arr">&#9656;</span></button>
-        <div class="log-more"><div><div class="log-more-in"><h5>The problem</h5><p>Reps were re-typing the same numbers into three systems, and orders could get lost in email threads.</p><h5>The approach</h5><p>An internal SPA for catalog, inventory and wholesale orders on top of one integrated API, so every number is entered once.</p><h5>The lesson</h5><p>Stop patching symptoms. Asking why the same ticket keeps coming back found shared root causes.</p><span class="log-stat">ORDERS +20% FASTER</span></div></div></div>
+        <div class="log-more"><div><div class="log-more-in"><h4>The problem</h4><p>Reps were re-typing the same numbers into three systems, and orders could get lost in email threads.</p><h4>The approach</h4><p>An internal SPA for catalog, inventory and wholesale orders on top of one integrated API, so every number is entered once.</p><h4>The lesson</h4><p>Stop patching symptoms. Asking why the same ticket keeps coming back found shared root causes.</p><span class="log-stat">ORDERS +20% FASTER</span></div></div></div>
       </div>
     </article>
     <article class="log-card nb-card reveal" id="note03">
@@ -635,7 +640,7 @@
         <p class="log-tldr">Every data-driven feature got a test before it shipped. Boring, and it works.</p>
         <div class="log-tags"><span>React</span><span>Django</span><span>.NET</span><span>Docker</span></div>
         <button class="log-btn" type="button" aria-expanded="false" data-magnetic data-cursor="read"><span>read the note</span><span class="arr">&#9656;</span></button>
-        <div class="log-more"><div><div class="log-more-in"><h5>The problem</h5><p>Features serving 50,000+ daily users meant regressions had real, immediate cost.</p><h5>The approach</h5><p>Unit and integration tests for each data-driven feature before release, plus a pass on slow API calls.</p><h5>The lesson</h5><p>Boring discipline measurably beats 11pm fire drills.</p><span class="log-stat">-35% REGRESSION BUGS</span></div></div></div>
+        <div class="log-more"><div><div class="log-more-in"><h4>The problem</h4><p>Features serving 50,000+ daily users meant regressions had real, immediate cost.</p><h4>The approach</h4><p>Unit and integration tests for each data-driven feature before release, plus a pass on slow API calls.</p><h4>The lesson</h4><p>Boring discipline measurably beats 11pm fire drills.</p><span class="log-stat">-35% REGRESSION BUGS</span></div></div></div>
       </div>
     </article>
     </div>
@@ -690,11 +695,13 @@
         <a class="contact-link" href="mailto:kabirrohal7@gmail.com" data-magnetic data-cursor="email"><span><span class="l">email</span><br/><span class="v">kabirrohal7@gmail.com</span></span><span class="go">↗</span></a>
         <a class="contact-link" href="tel:+923332132578" data-magnetic data-cursor="call"><span><span class="l">phone</span><br/><span class="v">+92 333 2132578</span></span><span class="go">↗</span></a>
         <a class="contact-link" href="https://github.com/rohal20" target="_blank" rel="noopener" data-magnetic data-cursor="visit"><span><span class="l">github</span><br/><span class="v">github.com/rohal20</span></span><span class="go">↗</span></a>
-        <a class="contact-link" href="https://myportfolio.com" target="_blank" rel="noopener" data-magnetic data-cursor="visit"><span><span class="l">location</span><br/><span class="v">Karachi, Pakistan</span></span><span class="go">↗</span></a>
+        <a class="contact-link" href="https://www.google.com/maps/search/?api=1&amp;query=Karachi%2C+Pakistan" target="_blank" rel="noopener" data-magnetic data-cursor="map"><span><span class="l">location</span><br/><span class="v">Karachi, Pakistan</span></span><span class="go">↗</span></a>
       </div>
     </div>
   </div>
 </section>
+
+</main>
 
 <footer>
   <div class="wrap foot-row">

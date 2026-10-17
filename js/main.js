@@ -2503,7 +2503,7 @@
   /* ---------- case studies ---------- */
   const caseWrap = $('caseWrap'),
     caseBox = $('caseBox');
-  const diagram = `<div class="case-diagram"><h4>$ architecture — how the copilot thinks</h4>
+  const diagram = `<div class="case-diagram"><h3>$ architecture — how the copilot thinks</h3>
     <svg viewBox="0 0 760 250" role="img" aria-label="Architecture diagram">
       <g font-family="IBM Plex Mono" font-weight="700" font-size="13" text-anchor="middle">
         <rect x="10" y="20" width="150" height="48" rx="10" fill="#FF5A5F" stroke="#fff" stroke-width="3"/><text x="85" y="49" fill="#0B0B0F">Prometheus</text>
@@ -2517,6 +2517,36 @@
       </g>
       <circle r="6" fill="#FFD23F"><animateMotion dur="2.4s" repeatCount="indefinite" path="M160 124 L270 124 L440 124 L560 124"/></circle>
     </svg></div>`;
+  /* The story behind each card. Edit the text here; it is the same material as the Build Log notes. */
+  const CASE_STORY = {
+    INCIDENT: {
+      problem: 'When something breaks you tab-switch between Prometheus (metrics), Grafana (dashboards) and Jaeger (traces) and correlate by eye. It is slow, and it happens at the worst possible time.',
+      approach: 'A thin adapter layer normalises each source into one shape, so the agent can reason over metrics and traces together. The Claude API turns the correlated signals into a plain-English explanation.',
+      lesson: 'The model was not the hard part. Clean, comparable inputs were.',
+    },
+    PITAMA: {
+      problem: 'Reps were re-typing the same numbers into three systems, and orders could get lost in email threads.',
+      approach: 'An internal SPA for catalog, inventory and wholesale orders on top of one integrated API, so every number is entered once.',
+      lesson: 'Stop patching symptoms. Asking why the same ticket keeps coming back found shared root causes.',
+    },
+    PLANET: {
+      problem: 'Features serving 50,000+ daily users meant regressions had real, immediate cost.',
+      approach: 'Unit and integration tests for each data-driven feature before release, plus a pass on slow API calls.',
+      lesson: 'Boring discipline measurably beats 11pm fire drills.',
+    },
+    DEALERSHIP: {
+      problem: 'A listings site is only useful if a buyer can narrow 100+ vehicles down quickly.',
+      approach: 'A React front end with advanced search and filtering, backed by Express.js and Django services and MongoDB, shipped through CI/CD on OpenShift.',
+      lesson: 'Search and filter UX is the product; the listing data is just the raw material.',
+    },
+  };
+  function storyHtml(nm) {
+    const key = Object.keys(CASE_STORY).find((k) => new RegExp(k, 'i').test(nm));
+    if (!key) return '';
+    const s = CASE_STORY[key];
+    const box = (t, x) => `<div class="case-sb"><h3>${t}</h3><p>${esc(x)}</p></div>`;
+    return `<div class="case-story">${box('The problem', s.problem)}${box('The approach', s.approach)}${box('The lesson', s.lesson)}</div>`;
+  }
   function openCase(card) {
     const nm = card.querySelector('.work-card-name').innerHTML.replace(/<br\s*\/?>/gi, ' ');
     const vis = card.querySelector('.work-card-visual');
@@ -2535,7 +2565,7 @@
       })
       .join('');
     const isCopilot = /INCIDENT/i.test(nm);
-    caseWrap.innerHTML = `<div class="case-kicker">${esc(lbl ? lbl.textContent : '')} · ${esc(val ? val.textContent : '')}</div><h2 class="case-title">${nm}</h2><p class="case-lead">${esc(p ? p.textContent : '')}</p><div class="case-stats">${statHtml}</div><div class="case-tags">${tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>${isCopilot ? '<div class="case-media" id="caseMedia"></div>' + diagram : ''}`;
+    caseWrap.innerHTML = `<div class="case-kicker">${esc(lbl ? lbl.textContent : '')} · ${esc(val ? val.textContent : '')}</div><h2 class="case-title">${nm}</h2><p class="case-lead">${esc(p ? p.textContent : '')}</p><div class="case-stats">${statHtml}</div><div class="case-tags">${tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>${storyHtml(nm)}${isCopilot ? '<div class="case-media" id="caseMedia"></div>' + diagram : ''}`;
     caseBox.style.background = col;
     caseBox.scrollTop = 0;
     openOv(caseOv);
@@ -2574,6 +2604,17 @@
       if (e.target.closest('a,button')) return;
       if (Math.abs(e.clientX - cdx) > 6) return;
       openCase(card);
+    });
+  });
+  workCards.forEach((card) => {
+    const nmTxt = card.querySelector('.work-card-name').textContent.replace(/\s+/g, ' ').trim();
+    card.setAttribute('aria-label', 'Open case study: ' + nmTxt);
+    card.addEventListener('keydown', (e) => {
+      if (e.target !== card) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCase(card);
+      }
     });
   });
   $('caseX').addEventListener('click', () => caseOv.classList.remove('open'));
@@ -2685,6 +2726,8 @@
     h.type = 'checkbox';
     h.id = 'cf-bot';
     h.tabIndex = -1;
+    h.setAttribute('aria-label', 'Leave this field empty');
+    h.setAttribute('aria-hidden', 'true');
     h.autocomplete = 'off';
     h.style.cssText = 'position:absolute;left:-9999px;opacity:0;';
     form.appendChild(h);
@@ -2761,13 +2804,14 @@
   const sndBtn = document.createElement('button');
   sndBtn.className = 'snd-btn';
   sndBtn.setAttribute('aria-pressed', 'false');
-  sndBtn.setAttribute('aria-label', 'Toggle sound effects');
+  sndBtn.setAttribute('aria-label', 'Sound effects: sound off');
   sndBtn.innerHTML = '<span class="snd-bars"><i></i><i></i><i></i></span><span id="sndTxt">sound off</span>';
   document.body.appendChild(sndBtn);
   sndBtn.addEventListener('click', () => {
     sndOn = !sndOn;
     sndBtn.setAttribute('aria-pressed', String(sndOn));
     document.getElementById('sndTxt').textContent = sndOn ? 'sound on' : 'sound off';
+    sndBtn.setAttribute('aria-label', 'Sound effects: ' + (sndOn ? 'sound on' : 'sound off'));
     if (sndOn) {
       actx();
       window.__sfx.pop();
@@ -2830,8 +2874,8 @@
     const blk = document.createElement('div');
     blk.className = 'gh-live';
     blk.innerHTML =
-      '<div id="ghHeatWrap" hidden><h4><span id="ghHeatTitle">$ git log</span><span>live · GitHub API</span></h4><div class="gh-grid-heat" id="ghHeat"></div><div class="gh-heat-legend" id="ghHeatNote"></div><div class="gh-lang-bar" id="ghLangBar"></div><div class="gh-lang-legend" id="ghLangLegend"></div></div>' +
-      '<div><h4><span>$ tail -f career.log</span><span class="live-dot">● live</span></h4><div class="gh-log-body" id="ghLog"></div></div>';
+      '<div id="ghHeatWrap" hidden><h3><span id="ghHeatTitle">$ git log</span><span>live · GitHub API</span></h3><div class="gh-grid-heat" id="ghHeat"></div><div class="gh-heat-legend" id="ghHeatNote"></div><div class="gh-lang-bar" id="ghLangBar"></div><div class="gh-lang-legend" id="ghLangLegend"></div></div>' +
+      '<div><h3><span>$ tail -f career.log</span><span class="live-dot">● live</span></h3><div class="gh-log-body" id="ghLog"></div></div>';
     grid.parentNode.insertBefore(blk, grid);
     const lines = [
       ['ok', '✓ 2025  shipped SPA tooling at Pitama Foods → orders +20% faster'],
@@ -2963,8 +3007,8 @@
     return (
       '<div class="frame"><div class="frame-bar"><i style="background:#FF5A5F"></i><i style="background:#FFD23F"></i><i style="background:#8FE24B"></i>&nbsp; incident-copilot · checkout-service · last 15m</div>' +
       '<div class="mock-grid">' +
-      '<div class="mp"><h5>p99 latency (ms)</h5><svg viewBox="0 0 300 110"><path class="ln" fill="none" stroke="#8FE24B" stroke-width="3" stroke-linejoin="round" d="M0,86 L30,84 L60,88 L90,82 L120,85 L150,80 L180,30 L200,12 L225,34 L250,70 L275,76 L300,74"/><circle class="spike" cx="200" cy="12" r="5" fill="#FF5A5F"/></svg></div>' +
-      '<div class="mp"><h5>error rate</h5><div class="bars">' +
+      '<div class="mp"><h3>p99 latency (ms)</h3><svg viewBox="0 0 300 110"><path class="ln" fill="none" stroke="#8FE24B" stroke-width="3" stroke-linejoin="round" d="M0,86 L30,84 L60,88 L90,82 L120,85 L150,80 L180,30 L200,12 L225,34 L250,70 L275,76 L300,74"/><circle class="spike" cx="200" cy="12" r="5" fill="#FF5A5F"/></svg></div>' +
+      '<div class="mp"><h3>error rate</h3><div class="bars">' +
       [8, 10, 9, 12, 11, 46, 88, 64, 30, 14, 10, 9]
         .map(
           (h, i) =>
@@ -2978,7 +3022,7 @@
         )
         .join('') +
       '</div></div>' +
-      '<div class="mp wide"><h5>trace waterfall</h5><div class="wf">' +
+      '<div class="mp wide"><h3>trace waterfall</h3><div class="wf">' +
       [
         ['0', '100', '#B892FF'],
         ['6', '30', '#FFD23F'],
@@ -3000,7 +3044,7 @@
         )
         .join('') +
       '</div></div>' +
-      '<div class="mp wide"><h5>🤖 copilot</h5><div class="agent-txt" id="mockAgent"></div></div>' +
+      '<div class="mp wide"><h3>🤖 copilot</h3><div class="agent-txt" id="mockAgent"></div></div>' +
       '</div><div class="mock-note">Illustrative mock-up — not a real screenshot. Put <b>copilot-dashboard.png</b> or <b>copilot-demo.mp4</b> next to index.html and this will show the real thing.</div></div>'
     );
   }

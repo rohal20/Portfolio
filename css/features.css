@@ -664,3 +664,54 @@ html.theme-gameboy * {
     font-size: 9.5px;
   }
 }
+
+/* ============================================================
+   POLISH
+   ============================================================ */
+/* blinking caret on the hero code window */
+.code-window-body::after {
+  content: '';
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: caretBlink 1s steps(1) infinite;
+}
+@keyframes caretBlink {
+  50% {
+    opacity: 0;
+  }
+}
+/* diagonal shine across project cards on hover (transform only, so it stays cheap) */
+.work-card {
+  overflow: hidden;
+}
+.work-card::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: translateX(-160%) skewX(-18deg);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .work-card:hover::after {
+    transform: translateX(380%) skewX(-18deg);
+    transition: transform 0.9s ease;
+  }
+}
+html.lite .work-card::after,
+html.lite .code-window-body::after {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-card::after,
+  .code-window-body::after {
+    display: none;
+  }
+}
