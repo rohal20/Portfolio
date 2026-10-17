@@ -4826,3 +4826,22 @@ html.lite .ekg path {
     grid-template-columns: 1fr;
   }
 }
+
+.case-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 12px 22px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--ink);
+  border: calc(3px * var(--bw-k)) solid var(--ink);
+  border-radius: 99px;
+  text-decoration: none;
+  box-shadow: calc(5px * var(--sh-k)) calc(5px * var(--sh-k)) 0 var(--white);
+}
+.case-link:hover {
+  background: var(--yellow);
+  color: var(--ink);
+}

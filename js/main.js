@@ -1994,7 +1994,7 @@
     },
     projects: () =>
       tp(
-        '<span class="g">AI Incident-Response Copilot</span>  LLM agent over Prometheus/Grafana/Jaeger · up to 90% faster diagnosis\n<span class="g">Car Dealership Platform</span>        React · Django · MongoDB · 100+ listings',
+        '<span class="g">AI Incident-Response Copilot</span>  LLM agent over Prometheus/Grafana/Jaeger · up to 90% faster diagnosis\n<span class="g">Clinic Appointment Agent</span>     LangGraph · Ollama · RAG · confirm-before-booking',
       ),
     experience: () =>
       tp(
@@ -2112,15 +2112,15 @@
     },
     {
       k: ['project', 'projects', 'built', 'build', 'side'],
-      a: 'Two highlights: the <b>AI Incident-Response Copilot</b> (an LLM agent over Prometheus, Grafana & Jaeger — up to 90% faster diagnosis) and a <b>Car Dealership platform</b> (React, Django, MongoDB, 100+ listings). Try the Work section — click a card for the full story.',
+      a: 'Two highlights: the <b>Clinic Appointment Agent</b> (LangGraph + Ollama, RAG over a clinic FAQ, books only after the patient confirms) and the <b>AI Incident-Response Copilot</b> (an LLM agent over Prometheus, Grafana & Jaeger — up to 90% faster diagnosis). Try the Work section — click a card for the full story.',
     },
     {
       k: ['copilot', 'ai', 'incident', 'claude', 'llm', 'agent', 'observability'],
       a: 'The AI Incident-Response Copilot uses the Claude API with an adapter layer to correlate Prometheus metrics, Grafana dashboards and Jaeger traces, then explains incidents in plain English. Up to 90% faster diagnosis.',
     },
     {
-      k: ['car', 'dealership', 'mongodb'],
-      a: 'The Car Dealership platform: React, Express, Django and MongoDB with advanced search & filtering over 100+ vehicle listings, deployed on OpenShift with CI/CD.',
+      k: ['clinic', 'appointment', 'langgraph', 'ollama', 'rag', 'booking'],
+      a: 'The Clinic Appointment Agent: a local-first agent built with LangGraph and Ollama. It answers clinic questions with RAG over an FAQ, finds free slots, and books only after the patient confirms. Code is on GitHub (rohal20/clinic-agent).',
     },
     {
       k: [
@@ -2282,7 +2282,7 @@
         ['🎓 Education', 'education'],
         ['📜 Certificate', 'certificate'],
         ['🤖 AI Copilot', 'copilot'],
-        ['🚗 Car Dealership', 'car dealership'],
+        ['🏥 Clinic Agent', 'clinic agent'],
         ['📍 Where is he?', 'location'],
         ['📄 Résumé', 'resume'],
         ['📬 Contact', 'contact'],
@@ -2534,10 +2534,11 @@
       approach: 'Unit and integration tests for each data-driven feature before release, plus a pass on slow API calls.',
       lesson: 'Boring discipline measurably beats 11pm fire drills.',
     },
-    DEALERSHIP: {
-      problem: 'A listings site is only useful if a buyer can narrow 100+ vehicles down quickly.',
-      approach: 'A React front end with advanced search and filtering, backed by Express.js and Django services and MongoDB, shipped through CI/CD on OpenShift.',
-      lesson: 'Search and filter UX is the product; the listing data is just the raw material.',
+    CLINIC: {
+      problem: 'Patients ask the same questions (fees, hours, policies) and need a free slot, but a small local model kept calling the wrong tool, ignoring tool results and getting dates wrong.',
+      approach: 'A LangGraph graph that first works out what the patient wants, then routes to answer, book, reschedule or my-appointments. Dates, free slots and booking checks are computed in Python, FAQ answers come from RAG over faq.md, and booking pauses on interrupt() until the patient confirms.',
+      lesson: 'With a small model, let the LLM handle the language and let code handle the exact work.',
+      link: 'https://github.com/rohal20/clinic-agent',
     },
   };
   function storyHtml(nm) {
@@ -2545,7 +2546,7 @@
     if (!key) return '';
     const s = CASE_STORY[key];
     const box = (t, x) => `<div class="case-sb"><h3>${t}</h3><p>${esc(x)}</p></div>`;
-    return `<div class="case-story">${box('The problem', s.problem)}${box('The approach', s.approach)}${box('The lesson', s.lesson)}</div>`;
+    return `<div class="case-story">${box('The problem', s.problem)}${box('The approach', s.approach)}${box('The lesson', s.lesson)}</div>${s.link ? `<a class="case-link" href="${s.link}" target="_blank" rel="noopener">View the code on GitHub ↗</a>` : ''}`;
   }
   function openCase(card) {
     const nm = card.querySelector('.work-card-name').innerHTML.replace(/<br\s*\/?>/gi, ' ');
