@@ -715,3 +715,83 @@ html.lite .code-window-body::after {
     display: none;
   }
 }
+
+/* ============================================================
+   READY TO BUILD? — oversized kinetic headline
+   ============================================================ */
+.ready-big {
+  margin: 0 auto;
+  padding: 0 16px;
+  max-width: 1300px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--white);
+  font-size: clamp(68px, 16.5vw, 260px);
+  line-height: 0.86;
+  letter-spacing: 0;
+}
+.rb-line {
+  display: block;
+  white-space: nowrap;
+}
+.rb-ch,
+.rb-gap {
+  display: inline-block;
+}
+.rb-ch {
+  text-shadow: calc(0.04em * var(--sh-k)) calc(0.04em * var(--sh-k)) 0 var(--ink);
+  transition: translate 0.25s cubic-bezier(0.34, 1.8, 0.64, 1);
+  will-change: transform;
+}
+.rb-outline {
+  color: transparent;
+  -webkit-text-stroke: calc(0.025em * var(--bw-k)) var(--white);
+  text-shadow: calc(0.04em * var(--sh-k)) calc(0.04em * var(--sh-k)) 0 var(--ink);
+}
+@media (hover: hover) {
+  .rb-ch:hover {
+    translate: 0 -0.12em;
+  }
+}
+/* after the entrance: a gentle ripple runs along the letters (transform only) */
+.rb-done .rb-ch {
+  animation: rbRipple 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.09s);
+}
+.rb-done .rb-q {
+  animation: rbWobble 1.6s ease-in-out infinite;
+  transform-origin: 50% 85%;
+}
+@keyframes rbRipple {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-0.07em);
+  }
+}
+@keyframes rbWobble {
+  0%,
+  100% {
+    transform: rotate(-8deg) scale(1);
+  }
+  50% {
+    transform: rotate(10deg) scale(1.08);
+  }
+}
+.ready-wrap {
+  padding-top: 70px;
+}
+html.lite .rb-done .rb-ch {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rb-done .rb-ch,
+  .rb-done .rb-q {
+    animation: none;
+  }
+}

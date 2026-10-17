@@ -1045,4 +1045,66 @@
       if (el.children.length === 0) io.observe(el); // plain-text labels only
     });
   })();
+
+  /* ---------- 7. READY TO BUILD? — big letters slam in, then ripple ---------- */
+  (function readyBig() {
+    const el = $('readyBig');
+    if (!el) return;
+    let n = 0;
+    el.querySelectorAll('.rb-line').forEach((line) => {
+      const txt = line.textContent;
+      line.textContent = '';
+      for (const ch of txt) {
+        const s = document.createElement('span');
+        if (ch === ' ') {
+          s.className = 'rb-gap';
+          s.innerHTML = '&nbsp;';
+        } else {
+          s.className = 'rb-ch' + (n % 4 === 2 ? ' rb-outline' : '') + (ch === '?' ? ' rb-q' : '');
+          s.textContent = ch;
+          s.style.setProperty('--i', n++);
+        }
+        line.appendChild(s);
+      }
+    });
+    const chars = Array.from(el.querySelectorAll('.rb-ch'));
+    if (reduceMotion || typeof gsap === 'undefined') {
+      el.classList.add('rb-done');
+      return;
+    }
+    gsap.set(chars, { opacity: 0 });
+    let played = false;
+    function play() {
+      if (played) return;
+      played = true;
+      gsap.fromTo(
+        chars,
+        { y: () => -140 - Math.random() * 120, rotate: () => (Math.random() - 0.5) * 70, scale: 1.5, opacity: 0 },
+        {
+          y: 0,
+          rotate: 0,
+          scale: 1,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'back.out(2.2)',
+          stagger: 0.055,
+          onStart: () => window.__sfx && window.__sfx.whoosh && window.__sfx.whoosh(0.5),
+          onComplete: () => {
+            gsap.set(chars, { clearProps: 'transform,opacity' }); // hand over to the CSS ripple
+            el.classList.add('rb-done');
+          },
+        }
+      );
+    }
+    const io = new IntersectionObserver(
+      (en) => {
+        if (en.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          play();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(el);
+  })();
 })();
