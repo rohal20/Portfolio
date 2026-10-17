@@ -20,34 +20,90 @@
     prevScrollForVelocity = 0,
     skewCurrent = 0,
     vTrackOffset = 0;
+  /* ---- layout cache ----------------------------------------------------
+     Positions are measured only when layout actually changes (load, resize,
+     the page growing or shrinking), never inside the per-frame loop. Reading
+     offsetTop / scrollHeight / scrollWidth on every frame forced a full
+     reflow each tick, which was the main cause of scroll jank. */
+  const sectionEls = Array.from(document.querySelectorAll('section[id]'));
+  const layout = { docMax: 0, heroH: 600, heroTop: 0, vWrap: 1, tops: [] };
+  let spotKick = null; // set by the cursor-spotlight block further down
+  const COARSE = window.matchMedia('(pointer:coarse)').matches;
+  const rootEl = document.documentElement;
+  function measureLayout() {
+    layout.docMax = Math.max(0, rootEl.scrollHeight - rootEl.clientHeight);
+    const hero = document.getElementById('hero');
+    layout.heroH = hero ? hero.offsetHeight : 600;
+    layout.heroTop = hero ? hero.offsetTop : 0;
+    layout.vWrap = velocityTrack ? velocityTrack.scrollWidth / 3 || 1 : 1;
+    layout.tops = sectionEls.map((s) => s.offsetTop);
+  }
   function setBodyHeight() {
-    document.body.style.height = smoothContent.getBoundingClientRect().height + 'px';
+    document.body.style.height = smoothContent.offsetHeight + 'px';
+    measureLayout();
   }
   window.addEventListener('resize', setBodyHeight);
   setTimeout(setBodyHeight, 50);
   setTimeout(setBodyHeight, 700);
+  window.addEventListener('load', () => setTimeout(setBodyHeight, 300));
+  if ('ResizeObserver' in window) {
+    let roRaf = 0;
+    new ResizeObserver(() => {
+      cancelAnimationFrame(roRaf);
+      roRaf = requestAnimationFrame(setBodyHeight);
+    }).observe(smoothContent);
+  }
+
+  /* the marquee banner only needs to move while it is on screen */
+  let vtVisible = true;
+  if (velocityTrack && 'IntersectionObserver' in window) {
+    new IntersectionObserver((en) => (vtVisible = en[0].isIntersecting), { rootMargin: '200px' }).observe(
+      velocityTrack.parentElement || velocityTrack,
+    );
+  }
+
+  let lastSpotScroll = NaN,
+    lastScrollWritten = NaN,
+    lastSkewWritten = NaN,
+    lastSTScroll = NaN;
   function smoothLoop() {
     targetScroll = window.scrollY || window.pageYOffset || 0;
-    const ease = reduceMotion ? 1 : 0.1;
+    /* touch devices already have native momentum; a second lerp on top only adds latency */
+    const instant = reduceMotion || COARSE || rootEl.classList.contains('lite');
+    const ease = instant ? 1 : 0.12;
     currentScroll += (targetScroll - currentScroll) * ease;
     if (Math.abs(targetScroll - currentScroll) < 0.05) currentScroll = targetScroll;
 
     const velocity = currentScroll - prevScrollForVelocity;
     prevScrollForVelocity = currentScroll;
 
-    const targetSkew = reduceMotion ? 0 : Math.max(-2, Math.min(2, velocity * -0.16));
+    const targetSkew = instant ? 0 : Math.max(-1.6, Math.min(1.6, velocity * -0.14));
     skewCurrent += (targetSkew - skewCurrent) * 0.15;
-    smoothContent.style.transform = `translate3d(0, ${-currentScroll}px, 0) skewY(${skewCurrent.toFixed(3)}deg)`;
-
-    if (velocityTrack) {
-      const boost = Math.min(7, Math.abs(velocity) * 0.9);
-      vTrackOffset += (reduceMotion ? 0.3 : 0.6) + boost;
-      const wrapWidth = velocityTrack.scrollWidth / 3 || 1;
-      const displayOffset = vTrackOffset % wrapWidth;
-      velocityTrack.style.transform = `translateX(${-displayOffset}px)`;
+    if (Math.abs(skewCurrent) < 0.005) skewCurrent = 0;
+    if (currentScroll !== lastScrollWritten || skewCurrent !== lastSkewWritten) {
+      lastScrollWritten = currentScroll;
+      lastSkewWritten = skewCurrent;
+      smoothContent.style.transform =
+        skewCurrent === 0
+          ? `translate3d(0, ${-currentScroll}px, 0)`
+          : `translate3d(0, ${-currentScroll}px, 0) skewY(${skewCurrent.toFixed(3)}deg)`;
     }
 
-    ScrollTrigger.update();
+    if (velocityTrack && vtVisible) {
+      const boost = Math.min(7, Math.abs(velocity) * 0.9);
+      vTrackOffset += (reduceMotion ? 0.3 : 0.6) + boost;
+      velocityTrack.style.transform = `translateX(${-(vTrackOffset % layout.vWrap)}px)`;
+    }
+
+    if (currentScroll !== lastSTScroll) {
+      lastSTScroll = currentScroll;
+      ScrollTrigger.update();
+    }
+    tickNav();
+    if (spotKick && currentScroll !== lastSpotScroll) {
+      lastSpotScroll = currentScroll;
+      spotKick();
+    }
     requestAnimationFrame(smoothLoop);
   }
   requestAnimationFrame(smoothLoop);
@@ -686,28 +742,31 @@
   /* PROGRESS + NAV */
   const progress = document.getElementById('traceProgress');
   const nav = document.getElementById('nav');
-  const sections = document.querySelectorAll('section[id]');
-  function onTick() {
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    progress.style.width = (max > 0 ? (targetScroll / max) * 100 : 0) + '%';
-    let current = sections[0].id;
-    sections.forEach((sec) => {
-      if (currentScroll >= sec.offsetTop - 172) current = sec.id;
-    });
-    document
-      .querySelectorAll('.nav-links a')
-      .forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
-    document
-      .querySelectorAll('.side-dot')
-      .forEach((d) => d.classList.toggle('active', d.dataset.target === current));
-    floatCta.classList.toggle(
-      'show',
-      currentScroll > (document.getElementById('hero')?.offsetHeight || 600) * 0.8 && current !== 'contact',
-    );
-    requestAnimationFrame(onTick);
+  let navLinks = null,
+    sideDotEls = null,
+    navCur = null,
+    ctaShown = null;
+  function tickNav() {
+    /* transform instead of width: no layout work per frame */
+    progress.style.transform =
+      'scaleX(' + (layout.docMax > 0 ? Math.min(1, targetScroll / layout.docMax) : 0).toFixed(4) + ')';
+    let current = sectionEls[0].id;
+    for (let i = 0; i < sectionEls.length; i++) {
+      if (currentScroll >= layout.tops[i] - 172) current = sectionEls[i].id;
+    }
+    if (current !== navCur) {
+      navCur = current;
+      if (!navLinks) navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach((a) => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+      sideDotEls = document.querySelectorAll('.side-dot');
+      sideDotEls.forEach((d) => d.classList.toggle('active', d.dataset.target === current));
+    }
+    const show = currentScroll > layout.heroH * 0.8 && current !== 'contact';
+    if (show !== ctaShown) {
+      ctaShown = show;
+      floatCta.classList.toggle('show', show);
+    }
   }
-  requestAnimationFrame(onTick);
   document.querySelectorAll('.nav-links a, .nav-cta').forEach((a) => {
     a.addEventListener('click', (e) => {
       e.preventDefault();
@@ -1060,7 +1119,7 @@
   const fxCtx = fxCanvas.getContext('2d');
   let FW = 0,
     FH = 0;
-  const FDPR = Math.min(window.devicePixelRatio || 1, 2);
+  const FDPR = Math.min(window.devicePixelRatio || 1, 1.5);
   function sizeFx() {
     FW = window.innerWidth;
     FH = window.innerHeight;
@@ -1275,19 +1334,32 @@
         card.style.setProperty('--gx', e.clientX - r.left + 'px');
         card.style.setProperty('--gy', e.clientY - r.top + 'px');
       }
+      if (spotKick) spotKick();
     });
     document.addEventListener('mouseleave', () => {
       clearSpot(hoverSec);
       hoverSec = null;
     });
-    (function spotTick() {
-      if (hoverSec) {
+    /* only runs while the pointer is over a section and something changed */
+    let spotRaf = 0,
+      spotX = NaN,
+      spotY = NaN,
+      spotS = NaN;
+    function spotTick() {
+      spotRaf = 0;
+      if (!hoverSec) return;
+      if (pmx !== spotX || pmy !== spotY || currentScroll !== spotS) {
+        spotX = pmx;
+        spotY = pmy;
+        spotS = currentScroll;
         const r = hoverSec.getBoundingClientRect();
         hoverSec.style.setProperty('--mx', pmx - r.left + 'px');
         hoverSec.style.setProperty('--my', pmy - r.top + 'px');
       }
-      requestAnimationFrame(spotTick);
-    })();
+    }
+    spotKick = () => {
+      if (!spotRaf && hoverSec) spotRaf = requestAnimationFrame(spotTick);
+    };
   }
 
   /* ---------- hero: mouse parallax depth layers + 3D tilt ---------- */
@@ -2739,8 +2811,8 @@
         whoosh(Math.min(0.09, 0.03 + dv / 900));
       }
       let cs = null;
-      secEls.forEach((s) => {
-        if (s.getBoundingClientRect().top < window.innerHeight * 0.45) cs = s.id;
+      secEls.forEach((s, i) => {
+        if (layout.tops[i] - currentScroll < window.innerHeight * 0.45) cs = s.id;
       });
       if (cs && cs !== curSec) {
         if (curSec !== null) window.__sfx.section();
@@ -3025,7 +3097,7 @@
     const cv = document.getElementById('mxCanvas'),
       cx = cv.getContext('2d');
     const GL = '0123456789%+-×↑↓';
-    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    const DPR = Math.min(window.devicePixelRatio || 1, 1.25); // decorative matrix rain: no need for retina sharpness
     let W = 0,
       H = 0,
       cols = [],
@@ -3063,7 +3135,7 @@
     });
     let last = performance.now();
     function frame(now) {
-      if (!visible) {
+      if (!visible || rootEl.classList.contains('lite')) {
         raf = 0;
         return;
       }
@@ -3501,8 +3573,8 @@
   setInterval(() => {
     const now = performance.now();
     /* away while the big hero Bit is on screen */
-    const hero = document.getElementById('hero');
-    const heroVisible = hero && hero.getBoundingClientRect().bottom > window.innerHeight * 0.55;
+    if (document.hidden) return;
+    const heroVisible = layout.heroTop + layout.heroH - currentScroll > window.innerHeight * 0.55;
     dock.classList.toggle('away', !!heroVisible);
     /* scroll reactions */
     const dv = currentScroll - lastScroll;
@@ -3522,8 +3594,8 @@
     }
     /* section change quips + explorer + end of page */
     let cs = null;
-    secEls.forEach((s) => {
-      if (s.getBoundingClientRect().top < window.innerHeight * 0.45) cs = s.id;
+    secEls.forEach((s, i) => {
+      if (layout.tops[i] - currentScroll < window.innerHeight * 0.45) cs = s.id;
     });
     if (cs) {
       visited[cs] = 1;
@@ -3536,7 +3608,7 @@
       }
     }
     if (secEls.length && secEls.every((s) => visited[s.id])) window.__ach('explorer');
-    const max = document.body.scrollHeight - window.innerHeight;
+    const max = layout.docMax;
     if (max > 400 && currentScroll / max > 0.965) window.__ach('end');
     /* idle -> sleep */
     if (!asleep && now - lastAct > 25000) {
@@ -3564,6 +3636,76 @@
       }, 520);
     });
   });
+
+  /* =====================================================================
+     PERFORMANCE LAYER
+     1. pause every CSS animation that is not on screen
+     2. adaptive "lite" mode: if the device cannot keep up while scrolling,
+        drop the expensive extras (skew, blurs, canvas rain, glow loops)
+     ===================================================================== */
+  if ('IntersectionObserver' in window) {
+    const offIO = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle('is-off', !e.isIntersecting)),
+      { rootMargin: '120px 0px' },
+    );
+    document.querySelectorAll('section, footer, .wave-divider, .velocity-banner').forEach((el) => offIO.observe(el));
+  }
+  (function adaptiveQuality() {
+    let stored = null;
+    try {
+      stored = sessionStorage.getItem('rk-lite');
+    } catch (e) {
+      /* ignore */
+    }
+    const weak = (navigator.hardwareConcurrency || 8) <= 2 || (navigator.deviceMemory || 8) <= 4;
+    const setLite = (on, remember) => {
+      rootEl.classList.toggle('lite', on);
+      if (remember) {
+        try {
+          sessionStorage.setItem('rk-lite', on ? '1' : '0');
+        } catch (e) {
+          /* ignore */
+        }
+      }
+    };
+    if (stored === '1' || (stored === null && weak)) setLite(true, false);
+    if (reduceMotion) return;
+    const boot = performance.now();
+    let last = performance.now(),
+      lastY = currentScroll,
+      sum = 0,
+      n = 0,
+      strikes = 0;
+    (function watch(now) {
+      const dt = now - last;
+      last = now;
+      const moving = Math.abs(currentScroll - lastY) > 0.5;
+      lastY = currentScroll;
+      /* judge only real scrolling frames, and never during the intro */
+      if (moving && dt < 250 && now - boot > 9000 && !rootEl.classList.contains('lite')) {
+        sum += dt;
+        if (++n === 90) {
+          strikes = sum / n > 34 ? strikes + 1 : 0;
+          sum = n = 0;
+          if (strikes >= 2) {
+            setLite(true, true);
+            showToast('⚡ lite mode on — smoother scrolling on this device (change it in Ctrl+K)', 4200);
+          }
+        }
+      }
+      requestAnimationFrame(watch);
+    })(performance.now());
+    cmds.push([
+      '⚡',
+      'Toggle lite mode (faster scrolling)',
+      'performance lite fast smooth lag',
+      () => {
+        const on = !rootEl.classList.contains('lite');
+        setLite(on, true);
+        showToast(on ? '⚡ lite mode on' : 'lite mode off — full effects', 2200);
+      },
+    ]);
+  })();
 
   /* ---------- hand-off to js/features.js (loaded after this file) ---------- */
   window.__rk = {
