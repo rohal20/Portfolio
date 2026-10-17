@@ -795,3 +795,183 @@ html.lite .rb-done .rb-ch {
     animation: none;
   }
 }
+
+/* --- READY TO BUILD: caution tape + build pipeline --- */
+.ready-wrap {
+  position: relative;
+}
+.rb-tape {
+  position: relative;
+  width: 112%;
+  margin: 0 -6% 26px;
+  background: var(--yellow);
+  color: var(--ink);
+  border-top: calc(4px * var(--bw-k)) solid var(--ink);
+  border-bottom: calc(4px * var(--bw-k)) solid var(--ink);
+  transform: rotate(-2deg);
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  padding: 9px 0;
+}
+.rb-tape.t2 {
+  margin: 34px -6% 0;
+  transform: rotate(1.6deg);
+  background: var(--ink);
+  color: var(--yellow);
+  border-color: var(--yellow);
+}
+.rb-tape-track {
+  display: inline-flex;
+  animation: rbTape 28s linear infinite;
+  will-change: transform;
+}
+.rb-tape.t2 .rb-tape-track {
+  animation-direction: reverse;
+}
+.rb-tape-track span {
+  flex: none;
+  padding-right: 0.6em;
+}
+@keyframes rbTape {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.rb-pipe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 18px;
+  max-width: 980px;
+  margin: 30px auto 0;
+  padding: 16px 20px 20px;
+  position: relative;
+  background: var(--ink);
+  color: var(--white);
+  border: calc(4px * var(--bw-k)) solid var(--white);
+  border-radius: calc(18px * var(--r-k));
+  box-shadow: calc(7px * var(--sh-k)) calc(7px * var(--sh-k)) 0 var(--yellow);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: left;
+}
+.rb-cmd {
+  color: var(--green);
+  font-weight: 700;
+}
+.rb-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.rb-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border: 2px solid #55555f;
+  border-radius: 99px;
+  color: #9a9aa6;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.rb-steps li i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #55555f;
+}
+.rb-steps li.on {
+  color: var(--yellow);
+  border-color: var(--yellow);
+}
+.rb-steps li.on i {
+  background: var(--yellow);
+  animation: rbBlink 0.5s steps(1) infinite;
+}
+.rb-steps li.done {
+  color: var(--ink);
+  background: var(--green);
+  border-color: var(--green);
+}
+.rb-steps li.done i {
+  background: var(--ink);
+}
+@keyframes rbBlink {
+  50% {
+    opacity: 0.2;
+  }
+}
+.rb-bar {
+  flex: 1 1 100%;
+  height: 8px;
+  background: #2a2a33;
+  border-radius: 99px;
+  overflow: hidden;
+  order: 5;
+}
+.rb-bar b {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--green);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 0.45s ease;
+}
+.rb-status {
+  order: 6;
+  color: var(--yellow);
+  font-weight: 700;
+}
+.rb-pipe.ok .rb-status {
+  color: var(--green);
+}
+.rb-again {
+  order: 7;
+  margin-left: auto;
+  font: inherit;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--white);
+  border: 2px solid var(--white);
+  border-radius: 99px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.rb-again:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+.rb-ok .rb-q {
+  color: var(--yellow);
+}
+@media (max-width: 600px) {
+  .rb-tape {
+    font-size: 12px;
+  }
+  .rb-pipe {
+    margin: 22px 14px 0;
+    font-size: 12px;
+  }
+  .rb-again {
+    margin-left: 0;
+  }
+}
+html.lite .rb-tape-track,
+html.lite .rb-steps li.on i {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rb-tape-track,
+  .rb-steps li.on i {
+    animation: none;
+  }
+}

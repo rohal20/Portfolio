@@ -1046,10 +1046,15 @@
     });
   })();
 
-  /* ---------- 7. READY TO BUILD? — big letters slam in, then ripple ---------- */
+  /* ---------- 7. READY TO BUILD? — slam in, run a build, flip "?" to "!" ---------- */
   (function readyBig() {
     const el = $('readyBig');
     if (!el) return;
+    const pipe = $('rbPipe'),
+      fill = $('rbFill'),
+      status = $('rbStatus'),
+      again = $('rbAgain');
+    const steps = Array.from(pipe.querySelectorAll('.rb-steps li'));
     let n = 0;
     el.querySelectorAll('.rb-line').forEach((line) => {
       const txt = line.textContent;
@@ -1068,15 +1073,63 @@
       }
     });
     const chars = Array.from(el.querySelectorAll('.rb-ch'));
-    if (reduceMotion || typeof gsap === 'undefined') {
-      el.classList.add('rb-done');
-      return;
+    const q = el.querySelector('.rb-q');
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    let busy = false,
+      seq = 0;
+
+    function setQ(ch) {
+      q.textContent = ch;
+      el.setAttribute('aria-label', ch === '!' ? 'Ready to build!' : 'Ready to build?');
     }
-    gsap.set(chars, { opacity: 0 });
-    let played = false;
-    function play() {
-      if (played) return;
-      played = true;
+    function reset() {
+      steps.forEach((s) => s.classList.remove('on', 'done'));
+      fill.style.transform = 'scaleX(0)';
+      status.textContent = 'queued…';
+      pipe.classList.remove('ok');
+      setQ('?');
+      el.classList.remove('rb-ok');
+    }
+    async function runPipeline(my) {
+      for (let k = 0; k < steps.length; k++) {
+        if (my !== seq) return;
+        steps[k].classList.add('on');
+        status.textContent = steps[k].dataset.s + '…';
+        fill.style.transform = 'scaleX(' + (k + 0.5) / steps.length + ')';
+        if (window.__sfx && window.__sfx.tick) window.__sfx.tick();
+        await wait(reduceMotion ? 60 : 480);
+        steps[k].classList.remove('on');
+        steps[k].classList.add('done');
+        fill.style.transform = 'scaleX(' + (k + 1) / steps.length + ')';
+      }
+      if (my !== seq) return;
+      pipe.classList.add('ok');
+      status.textContent = '✓ deployed to production — ready when you are';
+      el.classList.add('rb-ok');
+      // the "?" flips into a "!" : the build passed
+      if (!reduceMotion && typeof gsap !== 'undefined') {
+        q.style.animation = 'none'; // a running CSS animation would override the flip
+        gsap.to(q, { rotationX: 90, transformPerspective: 500, duration: 0.18, ease: 'power2.in', onComplete: () => {
+          setQ('!');
+          gsap.fromTo(q, { rotationX: -90 }, { rotationX: 0, transformPerspective: 500, duration: 0.5, ease: 'back.out(3)', clearProps: 'transform', onComplete: () => { q.style.animation = ''; } });
+        } });
+        const r = el.getBoundingClientRect();
+        burstConfetti(r.left + r.width / 2, r.top + r.height * 0.55);
+        if (window.__sfx && window.__sfx.pop) window.__sfx.pop();
+      } else setQ('!');
+      busy = false;
+    }
+    function slam(fast) {
+      if (busy) return;
+      busy = true;
+      const my = ++seq;
+      reset();
+      if (reduceMotion || typeof gsap === 'undefined') {
+        el.classList.add('rb-done');
+        runPipeline(my);
+        return;
+      }
+      el.classList.remove('rb-done');
       gsap.fromTo(
         chars,
         { y: () => -140 - Math.random() * 120, rotate: () => (Math.random() - 0.5) * 70, scale: 1.5, opacity: 0 },
@@ -1085,26 +1138,78 @@
           rotate: 0,
           scale: 1,
           opacity: 1,
-          duration: 0.8,
+          duration: fast ? 0.55 : 0.8,
           ease: 'back.out(2.2)',
-          stagger: 0.055,
+          stagger: fast ? 0.03 : 0.055,
           onStart: () => window.__sfx && window.__sfx.whoosh && window.__sfx.whoosh(0.5),
           onComplete: () => {
-            gsap.set(chars, { clearProps: 'transform,opacity' }); // hand over to the CSS ripple
-            el.classList.add('rb-done');
+            gsap.set(chars, { clearProps: 'transform,opacity' });
+            el.classList.add('rb-done'); // CSS ripple takes over
+            runPipeline(my);
           },
         }
       );
     }
+    if (!reduceMotion && typeof gsap !== 'undefined') gsap.set(chars, { opacity: 0 });
     const io = new IntersectionObserver(
       (en) => {
         if (en.some((e) => e.isIntersecting)) {
           io.disconnect();
-          play();
+          slam(false);
         }
       },
       { threshold: 0.35 }
     );
     io.observe(el);
+    again.addEventListener('click', () => {
+      busy = false;
+      slam(true);
+    });
+    el.addEventListener('click', () => {
+      if (!busy) slam(true);
+    });
+
+    /* letters lean toward and lift near the pointer (fine pointers only) */
+    if (!reduceMotion && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      const wrap = el.closest('.ready-wrap');
+      let on = false,
+        px = 0,
+        py = 0,
+        raf = 0;
+      new IntersectionObserver((e) => {
+        on = e[0].isIntersecting;
+        if (!on) clearLean();
+      }).observe(wrap);
+      function clearLean() {
+        chars.forEach((c) => {
+          c.style.translate = '';
+          c.style.rotate = '';
+        });
+      }
+      function frame() {
+        raf = 0;
+        if (!on || root.classList.contains('lite')) return;
+        const rects = chars.map((c) => c.getBoundingClientRect());
+        chars.forEach((c, i) => {
+          const r = rects[i];
+          const dx = px - (r.left + r.width / 2),
+            dy = py - (r.top + r.height / 2);
+          const d = Math.hypot(dx, dy);
+          const k = Math.max(0, 1 - d / 280);
+          c.style.translate = '0 ' + (-k * 0.14).toFixed(3) + 'em';
+          c.style.rotate = (-(dx / 280) * 9 * k).toFixed(2) + 'deg';
+        });
+      }
+      wrap.addEventListener(
+        'pointermove',
+        (e) => {
+          px = e.clientX;
+          py = e.clientY;
+          if (!raf && on) raf = requestAnimationFrame(frame);
+        },
+        { passive: true }
+      );
+      wrap.addEventListener('pointerleave', clearLean);
+    }
   })();
 })();
